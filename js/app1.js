@@ -116,6 +116,18 @@ let octo = {
                     helpDiv.style.top = '0px'
                     helpDiv.className = 'widgetHelp';
                     noteDiv.style.zIndex = 0;
+                    let toolsDiv = document.createElement('div');
+                    toolsDiv.style.position = 'absolute';
+                    toolsDiv.className = 'tools'
+                    toolsDiv.style.height = '40px';
+                    toolsDiv.style.width = '100%';
+                    toolsDiv.style.bottom = '0px';
+                    //toolsDiv.style.visibility = "hidden"
+                    let icon1 = document.createElement('span');
+                    icon1.className = 'material-icons md 36 icon';
+                    icon1.innerHTML = 'palette'
+                    toolsDiv.appendChild(icon1)
+                    helpDiv.appendChild(toolsDiv)
                     
                     //noteDiv.style.top = '100px'
                     txt = document.createElement('h1');
@@ -276,7 +288,13 @@ let view = {
             elem.style.left = window[key].left + 'px';
             elem.style.top = window[key].top + 'px';
             elem.addEventListener('mousedown', octo.mouseDown);
-
+            let tool = elem.childNodes[1].firstChild;
+            elem.addEventListener('mouseover', function(){
+                tool.className = 'tools1'
+                elem.addEventListener('mouseout', function(){
+                    tool.className = 'tools'
+                })
+            })
         }
         
         //console.log(windows)
@@ -300,7 +318,7 @@ let viewHead = {
             let head = document.getElementById('head')
             let body = document.documentElement
             let scroll = body.scrollTop
-            console.log(scroll)
+            //console.log(scroll)
             head.className = 'head'
             if(scroll === 0){
                 head.className ='';

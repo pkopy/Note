@@ -67,3 +67,12 @@ body{
     position: absolute;
     right: 0
 }
+
+.tools{
+    visibility: hidden;
+    
+}
+.tools1{
+    visibility: visible;
+    background-color: rgba(247, 247, 247, 0.7)
+}
