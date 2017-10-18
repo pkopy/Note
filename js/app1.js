@@ -60,6 +60,8 @@ let octo = {
         name = name + octo.getArrayLength();
         window[name] = {
             id: name,
+            col: 0,
+            row: 0,
             position: 'absolute',
             zIndex: 999,
             left: 0,
