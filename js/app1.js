@@ -135,8 +135,12 @@ let octo = {
             let key = Object.keys(windows[i])[0];
             console.log(key)
             let note = document.getElementById('key')
+            
+            windows[i][key].col = i;
+            let pos = windows[i][key].col
             windows[i][key].top = 50;
-            windows[i][key].left = 20 + i * 250 + 20 * i;
+
+            windows[i][key].left = 20 + pos * 250 + 20 * i;
             
         }
         console.log(windows)
