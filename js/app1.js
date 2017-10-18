@@ -145,6 +145,7 @@ let octo = {
         
         let objWindow;
         let id = e.target.id;
+        let obj = e.target;
         let clickX;
         let clickY;
         let x = e.clientX;
@@ -153,27 +154,31 @@ let octo = {
         for(let window of windows){
             if(Object.keys(window)[0] === id){
                 objWindow = window;
+                
                 //console.log(window) 
             }
         }
         clickX = objWindow[id].posX;
         clickY = objWindow[id].posY;
-        console.log(clickX)
+        
         let body = document.getElementById(objWindow[id].id)
         let left = document.getElementById('left');
-        
-        //console.log(clickX)
-        
+        body.removeEventListener('mousedown', octo.mouseDown)
+        body.addEventListener('mouseup', function(){
+            return octo.mouseUp(body)
+        })
         body.style.left = x - clickX -250  + 'px';
-        body.style.top = y  - clickX - 87 +'px';
-        
-       console.log(objWindow)
+        body.style.top = y  - clickY - 64 +'px';
+       //console.log(objWindow)
+
+    },
+    mouseUp:function(obj){
+        obj.removeEventListener('mousemove', octo.move);
     },
     mouseDown: function (e){
         let windows = octo.getWindows();
         let objWindow;
         let id = e.target.id;
-        console.log(e)
         for(let window of windows){
             if(Object.keys(window)[0] === id){
                 let body = document.getElementById(window[id].id)
@@ -182,15 +187,13 @@ let octo = {
                 window[id].posY = e.offsetY;
                 window[id].top = parseInt(body.style.top.slice(0,-2));
                 window[id].left = parseInt(body.style.left.slice(0,-2));
-                 
+                model.change(windows)
                 
             }
-            model.change(windows)
+            
         }
-        let body = document.getElementById(objWindow[id].id)
-        body.addEventListener('mousemove', octo.move)
-        
-        
+        let body = document.getElementById(objWindow[id].id);
+        body.addEventListener('mousemove', octo.move);
     },
     getWindows: () => model.arrayWindows(),
     getArrayLength: () => model.arrayWindows().length,
