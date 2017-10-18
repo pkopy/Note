@@ -191,7 +191,7 @@ let octo = {
             max--;
             head.style.backgroundColor = 'rgb('+ r + ',' + g + ',' + b +')';
             //console.log(r,g,b)
-            if(max === 0){
+            if(max <= 0){
                 clearInterval(id)
                 //viewHead.render()
                 octo.changeHead(rgb.start, end)
