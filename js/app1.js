@@ -149,7 +149,7 @@ let octo = {
         let clickY;
         let x = e.clientX;
         let y = e.clientY;
-       console.log(x)
+       
         for(let window of windows){
             if(Object.keys(window)[0] === id){
                 objWindow = window;
@@ -158,13 +158,14 @@ let octo = {
         }
         clickX = objWindow[id].posX;
         clickY = objWindow[id].posY;
+        console.log(clickX)
         let body = document.getElementById(objWindow[id].id)
         let left = document.getElementById('left');
         
         //console.log(clickX)
         
-        body.style.left = x   + 'px';
-        body.style.top = y   +'px';
+        body.style.left = x - clickX -250  + 'px';
+        body.style.top = y  - clickX - 87 +'px';
         
        console.log(objWindow)
     },
@@ -175,16 +176,18 @@ let octo = {
         console.log(e)
         for(let window of windows){
             if(Object.keys(window)[0] === id){
+                let body = document.getElementById(window[id].id)
                 objWindow = window;
-                //console.log(window) 
+                window[id].posX = e.offsetX;
+                window[id].posY = e.offsetY;
+                window[id].top = parseInt(body.style.top.slice(0,-2));
+                window[id].left = parseInt(body.style.left.slice(0,-2));
+                 
                 
             }
+            model.change(windows)
         }
         let body = document.getElementById(objWindow[id].id)
-        objWindow[id].posX = e.offsetX;
-        objWindow[id].posY = e.offsetY;
-        objWindow[id].top = parseInt(body.style.top.slice(0,-2));
-        objWindow[id].left = parseInt(body.style.left.slice(0,-2));
         body.addEventListener('mousemove', octo.move)
         
         
