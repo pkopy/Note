@@ -2,9 +2,21 @@
 /*===MODEL===*/
 let model = {
     init: function(){
-
+        if (!localStorage.notes) {
+            localStorage.notes = JSON.stringify([]);
+        }
     },
-    arrayWindows: [],
+    arrayWindows: function(){
+        return JSON.parse(localStorage.notes); 
+    },
+    add: function(obj){
+        let data = JSON.parse(localStorage.notes) ;
+        data.push(obj);
+        localStorage.notes = JSON.stringify(data);
+    },
+    change: function(windows){
+        localStorage.notes = JSON.stringify(windows);
+    },
     head:{
         start:{
             r: 102,
@@ -33,7 +45,7 @@ let octo = {
     init: function(){
 
         
-        
+        model.init();
         //console.log(model.arrayWindows)
         view.init();
         octo.setPos();
@@ -60,11 +72,12 @@ let octo = {
             title: '',
             content: '',
         }
-        model.arrayWindows.push(window)
+        model.add(window)
        
     },
     createDiv: function(){
-        let windows = model.arrayWindows;
+        let windows = model.arrayWindows();
+        console.log(windows)
         let widgets = document.querySelectorAll('.widget')
         
             for(let window of windows){
@@ -115,22 +128,28 @@ let octo = {
         
     },
     setPos: function(){
-        let windows = model.arrayWindows;
+        let windows = model.arrayWindows();
         for (let i = 0; i < windows.length; i++){
             let key = Object.keys(windows[i])[0];
+            console.log(key)
+            let note = document.getElementById('key')
             windows[i][key].top = 50;
             windows[i][key].left = 20 + i * 250 + 20 * i;
+            
         }
+        console.log(windows)
+        model.change(windows)
     },
     move: function (e){
         let windows = octo.getWindows();
+        
         let objWindow;
         let id = e.target.id;
         let clickX;
         let clickY;
         let x = e.clientX;
         let y = e.clientY;
-       // console.log(e)
+       console.log(x)
         for(let window of windows){
             if(Object.keys(window)[0] === id){
                 objWindow = window;
@@ -141,9 +160,12 @@ let octo = {
         clickY = objWindow[id].posY;
         let body = document.getElementById(objWindow[id].id)
         let left = document.getElementById('left');
-        console.log(left.style.width)
-        body.style.left = x - clickX - 250 + 'px';
-        body.style.top = y - clickY - 85 +'px';
+        
+        //console.log(clickX)
+        
+        body.style.left = x   + 'px';
+        body.style.top = y   +'px';
+        
        console.log(objWindow)
     },
     mouseDown: function (e){
@@ -167,8 +189,8 @@ let octo = {
         
         
     },
-    getWindows: () => model.arrayWindows,
-    getArrayLength: () => model.arrayWindows.length,
+    getWindows: () => model.arrayWindows(),
+    getArrayLength: () => model.arrayWindows().length,
     changeColor: function(start, end, elem){
         let head = document.getElementById('head')
         let r = start.r;
