@@ -84,6 +84,8 @@ let octo = {
                     noteDiv.style.position = window[key].position;
                     noteDiv.style.width = window[key].width + 'px';
                     noteDiv.style.height = window[key].height + 'px';
+                    noteDiv.style.top = window[key].top + 'px';
+                    noteDiv.style.left = window[key].left + 'px';
                     noteDiv.style.boxShadow =' 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)';
                     noteDiv.style.backgroundColor = 'white';
                     noteDiv.className = 'widget';
@@ -238,8 +240,9 @@ let view = {
         }
         newNote.addEventListener('click',function(){
             octo.newWindow();
-            octo.createDiv();
             octo.setPos()
+            octo.createDiv();
+            
         })
         console.log(windows)
     }
