@@ -176,17 +176,22 @@ let octo = {
         let b = start.b;
         console.log(r,g,b)
         elem.removeEventListener('click', viewHead.renderHead)
-        
+        let a = Math.abs(r-end.r)
+        let d = Math.abs(g-end.g)
+        let c = Math.abs(b-end.b)
+        let max = Math.max(Math.max(a, d), c);
+        console.log(max)
         let rgb = model.head
         let id = setInterval(function(){
             r = octo.changeValue(r, end.r)
             g = octo.changeValue(g, end.g)
             b = octo.changeValue(b, end.b)
             
-            
+            //
+            max--;
             head.style.backgroundColor = 'rgb('+ r + ',' + g + ',' + b +')';
             //console.log(r,g,b)
-            if(r>= end.r && b >= end.b && g >=end.g){
+            if(max === 0){
                 clearInterval(id)
                 //viewHead.render()
                 octo.changeHead(rgb.start, end)
