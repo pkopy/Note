@@ -72,7 +72,7 @@ let octo = {
                 let key = Object.keys(window)
                 
                 for(let i = 0; i < widgets.length; i++){
-                    console.log(widgets[i].id)
+                   // console.log(widgets[i].id)
                     if(widgets[i].id === key[0]){
                         flag++;
                     }
@@ -99,7 +99,7 @@ let octo = {
                     helpDiv.style.height = window[key].height + 'px';
                     helpDiv.style.position = 'absolute'
                     helpDiv.style.top = '0px'
-                    noteDiv.className = 'widgetHelp';
+                    helpDiv.className = 'widgetHelp';
                     noteDiv.style.zIndex = 0;
                     
                     //noteDiv.style.top = '100px'
@@ -230,11 +230,12 @@ let octo = {
 let view = {
     init: function(){
         octo.createDiv();
+        view.newNote();
        // document.getElementById('left').addEventListener('click', octo.test)
     },
     render: function(){
         let windows = octo.getWindows();
-        let newNote = document.getElementById('newNote')
+        
         for(let window of windows){
             let key = Object.keys(window)
             let elem = document.getElementById(window[key].id)
@@ -243,13 +244,19 @@ let view = {
             elem.addEventListener('mousedown', octo.mouseDown);
 
         }
+        
+        //console.log(windows)
+    },
+    newNote: function(){
+        let newNote = document.getElementById('newNote')
         newNote.addEventListener('click',function(){
             octo.newWindow();
             octo.setPos()
+            //console.log(octo.getWindows())
             octo.createDiv();
+            view.render();
             
         })
-        console.log(windows)
     }
 
 };
@@ -269,7 +276,6 @@ let viewHead = {
     },
     render: function() {
         let menus = document.getElementsByClassName('menuText') 
-        console.log(menus)
         for(let i = 0; i < menus.length; i++) {
             menus[i].addEventListener('click', viewHead.renderHead)
         }
