@@ -122,6 +122,7 @@ let octo = {
                     let icon1 = document.createElement('span');
                     icon1.className = 'material-icons md 36 icon';
                     icon1.innerHTML = 'palette'
+                    
                     icon1.style.opacity ='0.5'
                     toolsDiv.appendChild(icon1)
                     helpDiv.appendChild(toolsDiv)
@@ -152,7 +153,7 @@ let octo = {
             windows[i][key].left = 20 + i * 250 + 20 * i;
             
         }
-        console.log(windows)
+        //console.log(windows)
         model.change(windows)
     },
     move: function (e){
@@ -193,7 +194,7 @@ let octo = {
         let windows = octo.getWindows();
         let col = windows[obj.id][obj.id].col;
         
-        console.log('x')
+        //console.log('x')
        
         
         let left = obj.style.left.slice(0, -2)
@@ -219,7 +220,7 @@ let octo = {
         let windows = octo.getWindows();
         let objWindow;
         let id = e.target.id;
-        console.log(id)
+        //console.log(id)
         e.stopPropagation();
         for(let window of windows){
             if(Object.keys(window)[0] === id){
@@ -307,6 +308,16 @@ let octo = {
         
         return model[id];
     },
+    icon1Click: function(){
+        let palette = document.getElementById('palette')
+        palette.style.left = '20px';
+        palette.style.display = 'block'
+        let backColor = this.parentNode.parentNode.parentNode
+        palette.addEventListener('click', function(){
+            backColor.style.backgroundColor = 'yellowgreen'
+        })
+        console.log(this.parentNode)
+    }
     
 
 }
@@ -327,7 +338,7 @@ let view = {
            elem.style.top = window[key].top + 'px';
            elem.addEventListener('mousedown', octo.mouseDown);
            let tool = elem.childNodes[1].firstChild;
-           //console.log(tool)
+           let icon1 = tool.firstChild;
            tool.addEventListener('click', function(e){
                e.stopPropagation();
                //console.log('aaa')
@@ -342,7 +353,8 @@ let view = {
            })
            elem.addEventListener('mouseup', function(){
             return octo.mouseUp(elem)
-        })
+           })
+           icon1.addEventListener('click', octo.icon1Click)
        }
        //let body = document.getElementById(objWindow[id].id)
        //let left = document.getElementById('left');
