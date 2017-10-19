@@ -74,5 +74,6 @@ body{
 }
 .tools1{
     visibility: visible;
+    cursor: pointer;
     background-color: rgba(247, 247, 247, 0.9)
 }

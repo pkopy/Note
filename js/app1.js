@@ -182,22 +182,25 @@ let octo = {
         
         let body = document.getElementById(objWindow[id].id)
         let left = document.getElementById('left');
-        body.removeEventListener('mousedown', octo.mouseDown)
+        //body.removeEventListener('mousedown', octo.mouseDown)
         body.addEventListener('mouseup', function(){
             return octo.mouseUp(body)
         })
         body.style.left = x - clickX -250  + 'px';
-        body.style.top = y  - clickY - 64 +'px';
+        body.style.top = y  - clickY - 50 +'px';
        //console.log(objWindow)
 
     },
     mouseUp:function(obj){
         obj.removeEventListener('mousemove', octo.move);
+        view.render();
     },
     mouseDown: function (e){
         let windows = octo.getWindows();
         let objWindow;
         let id = e.target.id;
+        console.log(id)
+        e.stopPropagation();
         for(let window of windows){
             if(Object.keys(window)[0] === id){
                 let body = document.getElementById(window[id].id)
@@ -211,8 +214,15 @@ let octo = {
             }
             
         }
-        let body = document.getElementById(objWindow[id].id);
-        body.addEventListener('mousemove', octo.move);
+        //console.log(objWindow[id].id)
+        if(id !== ''){
+            let body = document.getElementById(objWindow[id].id);
+            body.addEventListener('mousemove', octo.move);
+            
+        }else{
+            return
+        }
+        
     },
     getWindows: () => model.arrayWindows(),
     getArrayLength: () => model.arrayWindows().length,
@@ -223,10 +233,10 @@ let octo = {
         let b = start.b;
         console.log(r,g,b)
         elem.removeEventListener('click', viewHead.renderHead)
-        let a = Math.abs(r-end.r)
-        let d = Math.abs(g-end.g)
-        let c = Math.abs(b-end.b)
-        let max = Math.max(Math.max(a, d), c);
+        let absR = Math.abs(r-end.r)
+        let absG = Math.abs(g-end.g)
+        let absB = Math.abs(b-end.b)
+        let max = Math.max(Math.max(absR, absG), absB);
         console.log(max)
         let rgb = model.head
         let id = setInterval(function(){
@@ -279,6 +289,29 @@ let view = {
         octo.createDiv();
         view.newNote();
        // document.getElementById('left').addEventListener('click', octo.test)
+       let windows = octo.getWindows();
+       
+       for(let window of windows){
+           let key = Object.keys(window)
+           let elem = document.getElementById(window[key].id)
+           elem.style.left = window[key].left + 'px';
+           elem.style.top = window[key].top + 'px';
+           elem.addEventListener('mousedown', octo.mouseDown);
+           let tool = elem.childNodes[1].firstChild;
+           //console.log(tool)
+           tool.addEventListener('click', function(e){
+               e.stopPropagation();
+               //console.log('aaa')
+           })
+           elem.addEventListener('mouseover', function(){
+               tool.className = 'tools1'
+               elem.addEventListener('mouseout', function(){
+                   tool.className = 'tools'
+                   octo.mouseUp(elem)
+                   
+               })
+           })
+       }
     },
     render: function(){
         let windows = octo.getWindows();
@@ -288,14 +321,7 @@ let view = {
             let elem = document.getElementById(window[key].id)
             elem.style.left = window[key].left + 'px';
             elem.style.top = window[key].top + 'px';
-            elem.addEventListener('mousedown', octo.mouseDown);
-            let tool = elem.childNodes[1].firstChild;
-            elem.addEventListener('mouseover', function(){
-                tool.className = 'tools1'
-                elem.addEventListener('mouseout', function(){
-                    tool.className = 'tools'
-                })
-            })
+           
         }
         
         //console.log(windows)
