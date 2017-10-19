@@ -126,6 +126,7 @@ let octo = {
                     let icon1 = document.createElement('span');
                     icon1.className = 'material-icons md 36 icon';
                     icon1.innerHTML = 'palette'
+                    icon1.style.opacity ='0.5'
                     toolsDiv.appendChild(icon1)
                     helpDiv.appendChild(toolsDiv)
                     
