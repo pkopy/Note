@@ -54,7 +54,7 @@ let octo = {
         name = name + octo.getArrayLength();
         window[name] = {
             id: name,
-            col: octo.getArrayLength() * 250 + 20,
+            col: 20 * octo.getArrayLength() + octo.getArrayLength() * 250 + 20,
             row: 0,
             position: 'absolute',
             zIndex: 999,
@@ -179,23 +179,22 @@ let octo = {
         let body = document.getElementById(objWindow[id].id)
         let left = document.getElementById('left');
         //body.removeEventListener('mousedown', octo.mouseDown)
-        body.addEventListener('mouseup', function(){
-            return octo.mouseUp(body)
-        })
+        
         body.style.left = x - clickX -250  + 'px';
         body.style.top = y  - clickY - 50 +'px';
         //model.change(windows)
-       //console.log(objWindow)
+       console.log(objWindow[id].id)
 
     },
     mouseUp:function(obj){
         //console.log(obj)
+        obj.removeEventListener('mousemove', octo.move);
         let x;
         let windows = octo.getWindows();
         let col = windows[obj.id][obj.id].col;
         
-
-        obj.removeEventListener('mousemove', octo.move);
+        console.log('x')
+       
         
         let left = obj.style.left.slice(0, -2)
         
@@ -208,13 +207,13 @@ let octo = {
                 windows[i][key].col = i+1;
             }*/
        // }
-        //model.change(windows)
+        model.change(windows)
         octo.setPos();
-        console.log(left)
-        console.log(col)
-        console.log(windows)
+        //console.log(left)
+       // console.log(col)
+      //  console.log(windows)
         
-        view.render();
+       view.render();
     },
     mouseDown: function (e){
         let windows = octo.getWindows();
@@ -341,8 +340,16 @@ let view = {
                    
                })
            })
+           elem.addEventListener('mouseup', function(){
+            return octo.mouseUp(elem)
+        })
        }
+       //let body = document.getElementById(objWindow[id].id)
+       //let left = document.getElementById('left');
+       //body.removeEventListener('mousedown', octo.mouseDown)
+       
     },
+    
     render: function(){
         let windows = octo.getWindows();
         
@@ -354,6 +361,7 @@ let view = {
            
         }
         
+        //this.style.left = 150 + 'px'
         //console.log(windows)
     },
     newNote: function(){
