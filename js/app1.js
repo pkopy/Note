@@ -43,24 +43,18 @@ let model = {
 /*===OCTO===*/
 let octo = {
     init: function(){
-
-        
         model.init();
-        //console.log(model.arrayWindows)
         view.init();
         octo.setPos();
         view.render();
         viewHead.init();
-        
-        
-        
     },
     newWindow: function(name = '', width = 250, height = 300){
         let window = {}
         name = name + octo.getArrayLength();
         window[name] = {
             id: name,
-            col: 0,
+            col: octo.getArrayLength() * 250 + 20,
             row: 0,
             position: 'absolute',
             zIndex: 999,
@@ -79,7 +73,7 @@ let octo = {
     },
     createDiv: function(){
         let windows = model.arrayWindows();
-        console.log(windows)
+        //console.log(windows)
         let widgets = document.querySelectorAll('.widget')
         
             for(let window of windows){
@@ -96,6 +90,7 @@ let octo = {
                     
                     let noteDiv = document.createElement('div')
                     noteDiv.id = window[key].id;
+                    
                     noteDiv.style.position = window[key].position;
                     noteDiv.style.width = window[key].width + 'px';
                     noteDiv.style.height = window[key].height + 'px';
@@ -110,8 +105,8 @@ let octo = {
                     let helpDiv = document.createElement('div')
                     helpDiv.id = window[key].id;
                     helpDiv.style.position = window[key].position;
-                    helpDiv.style.width = window[key].width + 'px';
-                    helpDiv.style.height = window[key].height + 'px';
+                    helpDiv.style.width = window[key].width - 2 + 'px';
+                    helpDiv.style.height = window[key].height -2 + 'px';
                     helpDiv.style.position = 'absolute'
                     helpDiv.style.top = '0px'
                     helpDiv.className = 'widgetHelp';
@@ -121,6 +116,7 @@ let octo = {
                     toolsDiv.className = 'tools'
                     toolsDiv.style.height = '40px';
                     toolsDiv.style.width = '100%';
+                    toolsDiv.style.padding = '2px' 
                     toolsDiv.style.bottom = '0px';
                     //toolsDiv.style.visibility = "hidden"
                     let icon1 = document.createElement('span');
@@ -139,21 +135,21 @@ let octo = {
                 }
                 
             }
-            
+          
         
     },
     setPos: function(){
         let windows = model.arrayWindows();
         for (let i = 0; i < windows.length; i++){
             let key = Object.keys(windows[i])[0];
-            console.log(key)
-            let note = document.getElementById('key')
+            //console.log(key)
+            //let note = document.getElementById('key')
             
-            windows[i][key].col = i;
+            //windows[i][key].col = i;
             let pos = windows[i][key].col
             windows[i][key].top = 50;
 
-            windows[i][key].left = 20 + pos * 250 + 20 * i;
+            windows[i][key].left = 20 + i * 250 + 20 * i;
             
         }
         console.log(windows)
@@ -169,12 +165,12 @@ let octo = {
         let clickY;
         let x = e.clientX;
         let y = e.clientY;
-       
+        //console.log(x)
         for(let window of windows){
             if(Object.keys(window)[0] === id){
                 objWindow = window;
                 
-                //console.log(window) 
+                
             }
         }
         clickX = objWindow[id].posX;
@@ -188,11 +184,36 @@ let octo = {
         })
         body.style.left = x - clickX -250  + 'px';
         body.style.top = y  - clickY - 50 +'px';
+        //model.change(windows)
        //console.log(objWindow)
 
     },
     mouseUp:function(obj){
+        //console.log(obj)
+        let x;
+        let windows = octo.getWindows();
+        let col = windows[obj.id][obj.id].col;
+        
+
         obj.removeEventListener('mousemove', octo.move);
+        
+        let left = obj.style.left.slice(0, -2)
+        
+        
+        //if(left >= 20 && left <= 270){
+           // windows[obj.id][obj.id].col = 0;
+            /*for(let i = 0; i < col; i++){
+                let key = Object.keys(windows[i])
+                //console.log(windows[i][key].col)
+                windows[i][key].col = i+1;
+            }*/
+       // }
+        //model.change(windows)
+        octo.setPos();
+        console.log(left)
+        console.log(col)
+        console.log(windows)
+        
         view.render();
     },
     mouseDown: function (e){
@@ -231,8 +252,12 @@ let octo = {
         let r = start.r;
         let g = start.g;
         let b = start.b;
-        console.log(r,g,b)
-        elem.removeEventListener('click', viewHead.renderHead)
+        
+        let menuLeft = document.querySelectorAll('.iconLeft')
+        for(let menu of menuLeft){
+            elem.removeEventListener('click', viewHead.renderHead)
+        }
+        
         let absR = Math.abs(r-end.r)
         let absG = Math.abs(g-end.g)
         let absB = Math.abs(b-end.b)
@@ -252,6 +277,9 @@ let octo = {
                 clearInterval(id)
                 //viewHead.render()
                 octo.changeHead(rgb.start, end)
+                for(let menu of menuLeft){
+                    elem.addEventListener('click', viewHead.renderHead)
+                }
             }
         }, 10)
         
@@ -287,7 +315,9 @@ let octo = {
 let view = {
     init: function(){
         octo.createDiv();
-        view.newNote();
+        let newNote = document.getElementById('newNote')
+        newNote.addEventListener('click',view.newNote)
+        //view.newNote();
        // document.getElementById('left').addEventListener('click', octo.test)
        let windows = octo.getWindows();
        
@@ -327,15 +357,15 @@ let view = {
         //console.log(windows)
     },
     newNote: function(){
-        let newNote = document.getElementById('newNote')
-        newNote.addEventListener('click',function(){
+       
+        
             octo.newWindow();
-            octo.setPos()
-            //console.log(octo.getWindows())
             octo.createDiv();
+            octo.setPos()
+            view.init();
+            //console.log(octo.getWindows())
             view.render();
-            
-        })
+        
     }
 
 };
