@@ -160,9 +160,14 @@ let octo = {
                     icon1.innerHTML = 'palette'
                     icon1.style.opacity ='0.6'
                     icon1.id = window[key].id
-                    
+                    let icon2 = document.createElement('span');
+                    icon2.className = 'material-icons md 36 icon xx1';
+                    icon2.innerHTML = 'delete'
+                    icon2.style.opacity ='0.6'
+                    icon2.id = window[key].id
                     //icon1.style.opacity ='0.5'
                     toolsDiv.appendChild(icon1)
+                    toolsDiv.appendChild(icon2)
                     helpDiv.appendChild(toolsDiv)
                     
                     //noteDiv.style.top = '100px'
@@ -230,7 +235,7 @@ let octo = {
         obj.removeEventListener('mousemove', octo.move);
         let x;
         let windows = octo.getWindows();
-        let col = windows[obj.id][obj.id].col;
+        //let col = windows[obj.id][obj.id].col;
         
         //console.log('x')
        
@@ -424,8 +429,23 @@ let octo = {
         //console.log('head color start: ' + start.r + ':'+ start.g + ':' + start.b)
         octo.changeColor1(start, end, elem)
         
+    },
+    delete: function(e){
+        let windows = octo.getWindows();
+        let id = e.target.parentNode.parentNode.parentNode.id
+        console.log(id)
+        for(let window of windows){
+            if(Object.keys(window)[0] === id){
+                let body = document.getElementById(window[id].id)
+                //body.remove()
+                start = window[id].backgroundColor
+                windows.splice(id, 1)
+                model.change(windows)
+                
+            }
+        }
+        console.log('del')
     }
-    
 
 }
 /*===VIEW===*/
@@ -448,20 +468,18 @@ let view = {
            let tool = elem.childNodes[1].firstChild;
            let icon1 = tool.firstChild;
            console.log(icon1)
-           tool.addEventListener('click', function(e){
-               e.stopPropagation();
-               //console.log('aaa')
-           })
+           
            elem.addEventListener('mouseover', function(){
                tool.className = 'tools1'
                console.log('test')
-               elem.addEventListener('mouseout', function(){
-                   tool.className = 'tools'
-                  
-                   octo.mouseUp(elem)
-                   
-               })
+               
            })
+           elem.addEventListener('mouseout', function(){
+            tool.className = 'tools'
+           
+            octo.mouseUp(elem)
+            
+             })
            elem.addEventListener('mouseup', function(){
             return octo.mouseUp(elem)
            })
@@ -476,19 +494,41 @@ let view = {
             let palette = document.getElementById('palette')
             palette.style.position = 'absolute';
             palette.style.left = '10px';
-            palette.style.bottom = '39px';
+            palette.style.bottom = '37px';
             palette.style.display = 'block'
             icon.style.opacity = '1'
             let backColor = this.parentNode.parentNode.parentNode
             icon.appendChild(palette)
-            palette.addEventListener('click', octo.changeColorNote)
-            icon.addEventListener('mouseout', function(){
-                icon.style.opacity = '0.5'
-                palette.style.display = 'none'
-            })
+            icon.parentNode.parentNode.parentNode.removeEventListener('mousedown', octo.mouseDown);
+           palette.addEventListener('click', octo.changeColorNote)
+            
             
         })
+        icon.addEventListener('mouseout', function(){
+                icon.style.opacity = '0.5'
+                palette.style.display = 'none'
+                icon.parentNode.parentNode.parentNode.addEventListener('mousedown', octo.mouseDown);
+            })
         
+       
+       }
+       let icons1 = document.querySelectorAll('.xx1')
+       for(let icon of icons1){
+        icon.addEventListener('mouseover', function(){
+            
+            icon.style.opacity = '1'
+            
+            icon.appendChild(palette)
+            icon.parentNode.parentNode.parentNode.removeEventListener('mousedown', octo.mouseDown);
+           //icon.addEventListener('click', octo.delete)
+            
+            
+        })
+        icon.addEventListener('mouseout', function(){
+                icon.style.opacity = '0.5'
+                palette.style.display = 'none'
+                icon.parentNode.parentNode.parentNode.addEventListener('mousedown', octo.mouseDown);
+            })
         
        
        }
