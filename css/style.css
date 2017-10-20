@@ -78,8 +78,47 @@ body{
 }
 #palette{
     position: fixed;
-    height: 150px;
-    width: 100px;
+    height: 100px;
+    width: 155px;
     display: none;
     background-color: #e8e8e8;
+    opacity: 0.7;
+}
+.colors{
+    height:40px; 
+    width: 40px; 
+    margin:7px;
+    border: 3px solid #b5bdb4;
+    border-radius: 25px;
+    position: absolute;
+    
+    
+}
+#white{
+    background-color: white;
+    left: 0px;
+}
+#red{
+    background-color: rgb(245, 151, 151);
+    left: 50px;
+}
+#blue{
+    background-color: rgb(152, 152, 255);
+    left: 100px;
+}
+#green{
+    background-color: greenyellow;
+    left: 0px;
+    top: 50px;
+}
+#yellow{
+    background-color: yellow;
+    left: 50px;
+    top: 50px;
+    
+}
+#pink{
+    background-color: pink;
+    left: 100px;
+    top: 50px;
 }

@@ -43,6 +43,21 @@ let model = {
         r: 65,
         g: 104,
         b: 187
+    },
+    white:{
+        r:255,
+        g:255,
+        b:255
+    },
+    red:{
+        r:245,
+        g:151,
+        b:151
+    },
+    blue:{
+        r:152,
+        g:152,
+        b:252
     }
 }
 /*===OCTO===*/
@@ -61,7 +76,7 @@ let octo = {
             id: name,
             col: 20 * octo.getArrayLength() + octo.getArrayLength() * 250 + 20,
             row: 0,
-            backgroundColor: 'rgb(255, 255, 255)',
+            backgroundColor: {r: 255, g: 255, b: 255},
             position: 'absolute',
             zIndex: 999,
             left: 0,
@@ -126,8 +141,10 @@ let octo = {
                     toolsDiv.style.bottom = '0px';
                     //toolsDiv.style.visibility = "hidden"
                     let icon1 = document.createElement('span');
-                    icon1.className = 'material-icons md 36 icon';
+                    icon1.className = 'material-icons md 36 icon xx';
                     icon1.innerHTML = 'palette'
+                    icon1.style.opacity ='0.6'
+                    icon1.id = window[key].id
                     
                     //icon1.style.opacity ='0.5'
                     toolsDiv.appendChild(icon1)
@@ -281,9 +298,21 @@ let octo = {
             if(max <= 0){
                 clearInterval(id)
                 //viewHead.render()
+                let idx = elem.id;
+                let windows = octo.getWindows();
+                for(let window of windows){
+                    if(Object.keys(window)[0] === idx){
+                        let body = document.getElementById(window[idx].id)
+                        console.log(window[idx].backgroundColor)
+                        window[idx].backgroundColor = end;
+                        
+                        model.change(windows)
+                        
+                    }
+                }    
                 
            }
-        }, 10)
+        }, 1)
         
        // console.log('end')
     },
@@ -349,32 +378,34 @@ let octo = {
         return model[id];
 
     },
-    icon1Click: function(){
-        let palette = document.getElementById('palette')
-        palette.style.position = 'absolute';
-        palette.style.left = '20px';
-        palette.style.display = 'block'
-        palette.removeEventListener('click', octo.changeColorNote)
-        let backColor = this.parentNode.parentNode.parentNode
-        backColor.appendChild(palette)
-        let obj = this
-       // console.log(obj)
-        palette.addEventListener('click', function(obj){
-          //  console.log(obj)
-            return octo.changeColorNote(obj)
-        })
-       //console.log(this.textContent)
-    },
-    changeColorNote: function(obj){
-        console.log(obj.target)
+    
+    changeColorNote: function(e){
+        let obj = e
+        //console.log(obj.target.parentNode)
+        obj.target.removeEventListener('click', octo.changeColorNote)
         let endId = obj.target.id
-        let elem = obj.target.parentNode;
+        console.log(endId)
+        let elem = obj.target.parentNode.parentNode.parentNode.parentNode.parentNode;
+        let id = obj.target.parentNode.parentNode.parentNode.parentNode.id
+        console.log(id)
+        let start
         let windows = octo.getWindows();
+        for(let window of windows){
+            if(Object.keys(window)[0] === id){
+                let body = document.getElementById(window[id].id)
+                console.log(window[id].backgroundColor)
+                start = window[id].backgroundColor
+                
+                //model.change(windows)
+                
+            }
+        }    
         let end = octo.getColor(endId)
-        let start = model.head.start
-        //console.log(elem.id)
+        
+       console.log(start, end, elem)
         //console.log('head color start: ' + start.r + ':'+ start.g + ':' + start.b)
         octo.changeColor1(start, end, elem)
+        
     }
     
 
@@ -394,17 +425,21 @@ let view = {
            let elem = document.getElementById(window[key].id)
            elem.style.left = window[key].left + 'px';
            elem.style.top = window[key].top + 'px';
+           elem.style.backgroundColor = 'rgb(' + window[key].backgroundColor.r + ',' + window[key].backgroundColor.g + ',' + window[key].backgroundColor.b + ')';
            elem.addEventListener('mousedown', octo.mouseDown);
            let tool = elem.childNodes[1].firstChild;
            let icon1 = tool.firstChild;
+           console.log(icon1)
            tool.addEventListener('click', function(e){
                e.stopPropagation();
                //console.log('aaa')
            })
            elem.addEventListener('mouseover', function(){
                tool.className = 'tools1'
+               console.log('test')
                elem.addEventListener('mouseout', function(){
                    tool.className = 'tools'
+                  
                    octo.mouseUp(elem)
                    
                })
@@ -412,8 +447,34 @@ let view = {
            elem.addEventListener('mouseup', function(){
             return octo.mouseUp(elem)
            })
-           icon1.addEventListener('click', octo.icon1Click)
+           
+            
+        
+           
        }
+       let icons = document.querySelectorAll('.xx')
+       for(let icon of icons){
+        icon.addEventListener('mouseover', function(){
+            let palette = document.getElementById('palette')
+            palette.style.position = 'absolute';
+            palette.style.left = '10px';
+            palette.style.bottom = '39px';
+            palette.style.display = 'block'
+            icon.style.opacity = '1'
+            let backColor = this.parentNode.parentNode.parentNode
+            icon.appendChild(palette)
+            palette.addEventListener('click', octo.changeColorNote)
+            icon.addEventListener('mouseout', function(){
+                icon.style.opacity = '0.5'
+                palette.style.display = 'none'
+            })
+            
+        })
+        
+        
+       
+       }
+       console.log(icons)
        //let body = document.getElementById(objWindow[id].id)
        //let left = document.getElementById('left');
        //body.removeEventListener('mousedown', octo.mouseDown)
