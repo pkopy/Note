@@ -82,7 +82,7 @@ body{
     width: 155px;
     display: none;
     background-color: #e8e8e8;
-    opacity: 0.7;
+    opacity: 1;
 }
 .colors{
     height:40px; 
@@ -107,12 +107,12 @@ body{
     left: 100px;
 }
 #green{
-    background-color: greenyellow;
+    background-color: rgb(210, 248, 148);
     left: 0px;
     top: 50px;
 }
 #yellow{
-    background-color: yellow;
+    background-color: rgb(253, 253, 0);
     left: 50px;
     top: 50px;
     
