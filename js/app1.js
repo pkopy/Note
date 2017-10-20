@@ -38,6 +38,11 @@ let model = {
         r: 65,
         g: 104,
         b: 187
+    },
+    palette:{
+        r: 65,
+        g: 104,
+        b: 187
     }
 }
 /*===OCTO===*/
@@ -56,6 +61,7 @@ let octo = {
             id: name,
             col: 20 * octo.getArrayLength() + octo.getArrayLength() * 250 + 20,
             row: 0,
+            backgroundColor: 'rgb(255, 255, 255)',
             position: 'absolute',
             zIndex: 999,
             left: 0,
@@ -97,7 +103,7 @@ let octo = {
                     noteDiv.style.top = window[key].top + 'px';
                     noteDiv.style.left = window[key].left + 'px';
                     noteDiv.style.boxShadow =' 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)';
-                    noteDiv.style.backgroundColor = 'white';
+                    noteDiv.style.backgroundColor = window[key].backgroundColor;
                     noteDiv.className = 'widget';
                     noteDiv.style.zIndex = 0;
                     noteDiv.style.border = '1px solid #ffffff';
@@ -123,7 +129,7 @@ let octo = {
                     icon1.className = 'material-icons md 36 icon';
                     icon1.innerHTML = 'palette'
                     
-                    icon1.style.opacity ='0.5'
+                    //icon1.style.opacity ='0.5'
                     toolsDiv.appendChild(icon1)
                     helpDiv.appendChild(toolsDiv)
                     
@@ -236,7 +242,7 @@ let octo = {
             
         }
         //console.log(objWindow[id].id)
-        if(id !== ''){
+        if(id !== '' && !isNaN(id)){
             let body = document.getElementById(objWindow[id].id);
             body.addEventListener('mousemove', octo.move);
             
@@ -247,6 +253,40 @@ let octo = {
     },
     getWindows: () => model.arrayWindows(),
     getArrayLength: () => model.arrayWindows().length,
+    changeColor1: function(start, end, elem){
+        
+        let r = start.r;
+        let g = start.g;
+        let b = start.b;
+        
+        //console.log(r, end.r)
+        
+        let absR = Math.abs(r-end.r)
+        let absG = Math.abs(g-end.g)
+        let absB = Math.abs(b-end.b)
+        let max = Math.max(Math.max(absR, absG), absB);
+       // console.log(max)
+        let rgb = model.head
+        
+        let id = setInterval(function(){
+            
+            r = octo.changeValue(r, end.r)
+            g = octo.changeValue(g, end.g)
+            b = octo.changeValue(b, end.b)
+            
+            //
+            max--;
+            elem.style.backgroundColor = 'rgb('+ r + ',' + g + ',' + b +')';
+            //console.log(r,g,b)
+            if(max <= 0){
+                clearInterval(id)
+                //viewHead.render()
+                
+           }
+        }, 10)
+        
+       // console.log('end')
+    },
     changeColor: function(start, end, elem){
         let head = document.getElementById('head')
         let r = start.r;
@@ -305,18 +345,36 @@ let octo = {
         console.log(model.head.start)
     },
     getColor: function(id){
-        
+        //console.log(id)
         return model[id];
+
     },
     icon1Click: function(){
         let palette = document.getElementById('palette')
+        palette.style.position = 'absolute';
         palette.style.left = '20px';
         palette.style.display = 'block'
+        palette.removeEventListener('click', octo.changeColorNote)
         let backColor = this.parentNode.parentNode.parentNode
-        palette.addEventListener('click', function(){
-            backColor.style.backgroundColor = 'yellowgreen'
+        backColor.appendChild(palette)
+        let obj = this
+       // console.log(obj)
+        palette.addEventListener('click', function(obj){
+          //  console.log(obj)
+            return octo.changeColorNote(obj)
         })
-        console.log(this.parentNode)
+       //console.log(this.textContent)
+    },
+    changeColorNote: function(obj){
+        console.log(obj.target)
+        let endId = obj.target.id
+        let elem = obj.target.parentNode;
+        let windows = octo.getWindows();
+        let end = octo.getColor(endId)
+        let start = model.head.start
+        //console.log(elem.id)
+        //console.log('head color start: ' + start.r + ':'+ start.g + ':' + start.b)
+        octo.changeColor1(start, end, elem)
     }
     
 

@@ -74,7 +74,7 @@ body{
 }
 .tools1{
     visibility: visible;
-    background-color: rgba(247, 247, 247, 0.9)
+    background-color: rgba(247, 247, 247, 0.5)
 }
 #palette{
     position: fixed;
