@@ -336,7 +336,7 @@ let octo = {
         let r = start.r;
         let g = start.g;
         let b = start.b;
-        
+        let text = elem.textContent.toUpperCase();
         let menuLeft = document.querySelectorAll('.iconLeft')
         for(let menu of menuLeft){
             elem.removeEventListener('click', viewHead.renderHead)
@@ -356,6 +356,9 @@ let octo = {
             //
             max--;
             head.style.backgroundColor = 'rgb('+ r + ',' + g + ',' + b +')';
+            head.style.color = 'white';
+            let textHead = document.getElementById('headText')
+            textHead.firstChild.textContent = text;
             //console.log(r,g,b)
             if(max <= 0){
                 clearInterval(id)

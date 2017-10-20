@@ -65,7 +65,8 @@ body{
     border-radius: 25px;
     background-color: yellowgreen;
     position: absolute;
-    right: 0
+    right: 0;
+    bottom: 0;
 }
 
 .tools{
@@ -121,4 +122,9 @@ body{
     background-color: pink;
     left: 100px;
     top: 50px;
+}
+#headText{
+    position: absolute;
+    width: 200px;
+     left: 50px
 }
