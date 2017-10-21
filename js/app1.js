@@ -216,29 +216,38 @@ let octo = {
         body.style.left = x - clickX -250  + 'px';
         body.style.top = y  - clickY - 50 +'px';
     },
+    mouseUpremove: function(obj){
+        obj.removeEventListener('mousemove', octo.move);
+        view.render();
+    },
     mouseUp:function(obj){
         obj.removeEventListener('mousemove', octo.move);
         let x;
         let windowCopy;
         let windows = octo.getWindows();
         let left = obj.style.left.slice(0, -2)
-        console.log('left: ', left)
-        console.log('oryginal: ', windows[obj.id][obj.id].id)
+       // console.log('left: ', left)
+       // console.log('oryginal: ', windows[obj.id][obj.id].id)
         if(left >= 20 && left <= 150){
             x = 0;
             windows[obj.id][obj.id].col = x;
             
-            console.log(windows[obj.id][obj.id].col)
+            //console.log(windows[obj.id][obj.id].col)
             windowCopy = windows[obj.id];
-            console.log('copy: ', windows[obj.id])
+            //console.log('copy: ', windows[obj.id])
             //windows.splice(windows[obj.id], 1)
             for(let window of windows){
                 let key = Object.keys(window)
+                let colStart = windows[key][key].col
                 if(key[0] !== windows[obj.id][obj.id].id){
-                    console.log(key)
-                    windows[key][key].col = x + 1;
-                    console.log(window[key].col)
-
+                    console.log(colStart)
+                    
+                    if(colStart !== windows.length - 1)
+                        windows[key][key].col = colStart + 1;
+                    
+                    
+                    //console.log(window[key].col)
+                    x++
                 }
                 
             }
@@ -256,10 +265,10 @@ let octo = {
         let objWindow;
         let id = e.target.id;
         e.stopPropagation();
-        console.log(windows[id][id].col)
+        //console.log(windows[id][id].col)
         for(let i = 0; i < windows.length; i++){
-            //console.log(windows)
-           // windows[i][i].col = 0;
+           // console.log(windows)
+          // windows[i][i].col = 0;
         }
         for(let window of windows){
             if(Object.keys(window)[0] === id){
@@ -420,8 +429,8 @@ let view = {
                tool.className = 'tools1'
             })
             elem.addEventListener('mouseout', function(){
-               tool.className = 'tools'
-            //octo.mouseUp(elem)
+                tool.className = 'tools'
+                octo.mouseUpremove(elem)
             })
             elem.addEventListener('mouseup', function(){
                return octo.mouseUp(elem)
