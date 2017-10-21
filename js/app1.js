@@ -202,12 +202,13 @@ let octo = {
         let x = e.clientX;
         let y = e.clientY;
         for(let window of windows){
+            
             if(Object.keys(window)[0] === id){
-                objWindow = window;
-                
-                
+                objWindow = window; 
             }
+
         }
+        
         clickX = objWindow[id].posX;
         clickY = objWindow[id].posY;
         let body = document.getElementById(objWindow[id].id)
@@ -218,17 +219,34 @@ let octo = {
     mouseUp:function(obj){
         obj.removeEventListener('mousemove', octo.move);
         let x;
+        let windowCopy;
         let windows = octo.getWindows();
         let left = obj.style.left.slice(0, -2)
+        console.log('left: ', left)
+        console.log('oryginal: ', windows[obj.id][obj.id].id)
+        if(left >= 20 && left <= 150){
+            x = 0;
+            windows[obj.id][obj.id].col = x;
+            
+            console.log(windows[obj.id][obj.id].col)
+            windowCopy = windows[obj.id];
+            console.log('copy: ', windows[obj.id])
+            //windows.splice(windows[obj.id], 1)
+            for(let window of windows){
+                let key = Object.keys(window)
+                if(key[0] !== windows[obj.id][obj.id].id){
+                    console.log(key)
+                    windows[key][key].col = x + 1;
+                    console.log(window[key].col)
+
+                }
                 
-        //if(left >= 20 && left <= 270){
-           // windows[obj.id][obj.id].col = 0;
-            /*for(let i = 0; i < col; i++){
-                let key = Object.keys(windows[i])
-                //console.log(windows[i][key].col)
-                windows[i][key].col = i+1;
-            }*/
-       // }
+            }
+            
+            model.change(windows)
+            console.log(windows)
+        }
+       //windows.splice(x, 0, windowCopy)
         model.change(windows)
         octo.setPos();
         view.render();
@@ -238,6 +256,11 @@ let octo = {
         let objWindow;
         let id = e.target.id;
         e.stopPropagation();
+        console.log(windows[id][id].col)
+        for(let i = 0; i < windows.length; i++){
+            //console.log(windows)
+           // windows[i][i].col = 0;
+        }
         for(let window of windows){
             if(Object.keys(window)[0] === id){
                 let body = document.getElementById(window[id].id)
@@ -248,6 +271,8 @@ let octo = {
                 window[id].left = parseInt(body.style.left.slice(0,-2));
                 model.change(windows)  
             }
+            
+            
         }
         if(id !== '' && !isNaN(id)){
             let body = document.getElementById(objWindow[id].id);
@@ -396,7 +421,7 @@ let view = {
             })
             elem.addEventListener('mouseout', function(){
                tool.className = 'tools'
-            octo.mouseUp(elem)
+            //octo.mouseUp(elem)
             })
             elem.addEventListener('mouseup', function(){
                return octo.mouseUp(elem)
@@ -439,7 +464,9 @@ let view = {
     
     render: function(){
         let windows = octo.getWindows();
+        //console.log(windows)
         for(let window of windows){
+            
             let key = Object.keys(window)
             let elem = document.getElementById(window[key].id)
             elem.style.left = window[key].left + 'px';
