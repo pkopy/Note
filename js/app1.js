@@ -80,7 +80,7 @@ let octo = {
     init: function(){
         model.init();
         view.init();
-        octo.setPos();
+        //octo.setPos();
         view.render();
         viewHead.init();
     },
@@ -89,7 +89,7 @@ let octo = {
         name = name + octo.getArrayLength();
         window[name] = {
             id: name,
-            col: octo.getArrayLength(),
+            col: 0,
             row: 0,
             backgroundColor: {r: 255, g: 255, b: 255},
             position: 'absolute',
@@ -182,21 +182,96 @@ let octo = {
           
         
     },
-    setPos: function(){
+    setPosInit: function(){
         let windows = model.arrayWindows();
+        let sumWidth = 0;
+        let row = 0;
+        let pos = 0;
+        
         for (let i = 0; i < windows.length; i++){
             let key = Object.keys(windows[i])[0];
-            let pos = windows[i][key].col
-            windows[i][key].top = 50;
+            //let pos = windows[i][key].col;
+            
+            sumWidth +=  300; 
+            if(sumWidth >= window.innerWidth){
+                row++;
+                sumWidth = 300;
+                pos = 0;
+                
+            }
+            
+            windows[i][key].top = 50 + row * 300 + 20 * row;
             windows[i][key].left = 20 + pos * 250 + 20 * pos;
+            windows[i][key].col = pos;
+            windows[i][key].row = row;
+            pos++;
+            
         }
         model.change(windows)
+        console.log(windows)
+        console.log(sumWidth)
+        console.log(window.innerWidth)
+    },
+    newSetPos:function(){
+        let windows = model.arrayWindows();
+        let lastWindow = windows[windows.length - 2][windows.length - 2];
+        //console.log(lastWindow)
+        let pos = lastWindow.col;
+        let row = lastWindow.row;
+        let sumWidth = 300 + pos * 300
+        console.log(sumWidth)
+        if(windows.length === 1){
+            octo.setPosInit()
+        
+        }else if(sumWidth >= window.innerWidth){
+            row++;
+            sumWidth = 300;
+            pos++;
+            windows[windows.length - 1][windows.length - 1].top = 50 + row * 300 + 20 * row;
+            windows[windows.length - 1][windows.length - 1].left = 20 + pos * 250 + 20 * pos;
+            windows[windows.length - 1][windows.length - 1].col = pos;
+            windows[windows.length - 1][windows.length - 1].row = row;
+            console.log(pos)
+        }else{
+            pos++
+            windows[windows.length-1][windows.length-1].top = 50 + row * 300 + 20 * row;
+            windows[windows.length-1][windows.length-1].left = 20 + pos * 250 + 20 * pos;
+            windows[windows.length-1][windows.length-1].col = pos;
+            windows[windows.length-1][windows.length-1].row = row;
+        }
+        model.change(windows);
+        
+    },
+    setPos: function(){
+        let windows = model.arrayWindows();
+        let sumWidth = 250;
+        let row = 0;
+        let pos = 0;
+        for (let i = 0; i < windows.length; i++){
+            let key = Object.keys(windows[i])[0];
+            let pos = windows[i][key].col;
+            let row = windows[i][key].row;
+            
+            
+            windows[i][key].top = 50 + row * 300 + 20 * row;
+            windows[i][key].left = 20 + pos * 250 + 20 * pos;
+           // windows[i][key].col = pos;
+           // windows[i][key].row = row;
+            
+            
+        }
+        model.change(windows)
+        
+        //console.log(windows)
+       // console.log(sumWidth)
+       // console.log(window.innerWidth)
     },
     move: function (e){
         let windows = octo.getWindows();
         let objWindow;
         let id = e.target.id;
         let obj = e.target;
+        //console.log(obj.parentNode)
         let clickX;
         let clickY;
         let x = e.clientX;
@@ -208,17 +283,53 @@ let octo = {
             }
 
         }
-        
+        let bod = document.documentElement
+        let scroll = bod.scrollTop
         clickX = objWindow[id].posX;
         clickY = objWindow[id].posY;
         let body = document.getElementById(objWindow[id].id)
         let left = document.getElementById('left');
         body.style.left = x - clickX -250  + 'px';
-        body.style.top = y  - clickY - 50 +'px';
+        body.style.top = y  - clickY - 50 + scroll +'px';
+        
+        let left1 = obj.parentNode.style.left.slice(0, -2)
+        if(left1 >= (20 - clickX ) && left1 <= (250 - clickX)  && windows[obj.id][obj.id].col !== 0){
+            console.log('aaaaa')
+            let oldCol = windows[obj.id][obj.id].col
+            let oldRow = windows[obj.id][obj.id].row
+            x = 0;
+            windows[obj.id][obj.id].col = x;
+            console.log('a')
+            //console.log(windows[obj.id][obj.id].col)
+            windowCopy = windows[obj.id];
+            //console.log('copy: ', windows[obj.id])
+            //windows.splice(windows[obj.id], 1)
+            for(let window of windows){
+                let key = Object.keys(window)
+                let colStart = windows[key][key].col
+                let rowStart = windows[key][key].row
+                if(key[0] !== windows[obj.id][obj.id].id){
+                    console.log(colStart)
+                    
+                    if(colStart < oldCol && rowStart === oldRow)
+                        windows[key][key].col = colStart + 1;
+                    
+                    
+                    //console.log(window[key].col)
+                    x++
+                }
+                
+            }
+            model.change(windows)
+            octo.setPos();
+            view.render();
+        }
+        
     },
     mouseUpremove: function(obj){
         obj.removeEventListener('mousemove', octo.move);
-        view.render();
+        octo.setPos()
+        //view.render();
     },
     mouseUp:function(obj){
         obj.removeEventListener('mousemove', octo.move);
@@ -228,10 +339,10 @@ let octo = {
         let left = obj.style.left.slice(0, -2)
        // console.log('left: ', left)
        // console.log('oryginal: ', windows[obj.id][obj.id].id)
-        if(left >= 20 && left <= 150){
+       /*if(left >= 20 && left <= 150 && windows[obj.id][obj.id].col !== 0){
             x = 0;
             windows[obj.id][obj.id].col = x;
-            
+            console.log('a')
             //console.log(windows[obj.id][obj.id].col)
             windowCopy = windows[obj.id];
             //console.log('copy: ', windows[obj.id])
@@ -252,13 +363,13 @@ let octo = {
                 
             }
             
-            model.change(windows)
-            console.log(windows)
+            
         }
        //windows.splice(x, 0, windowCopy)
         model.change(windows)
-        octo.setPos();
+        octo.setPos();*/
         view.render();
+        
     },
     mouseDown: function (e){
         let windows = octo.getWindows();
@@ -284,7 +395,13 @@ let octo = {
             
         }
         if(id !== '' && !isNaN(id)){
+            let widgets = document.querySelectorAll('.widget');
+            for(let widget of widgets){
+                widget.style.zIndex = '0';
+            }
             let body = document.getElementById(objWindow[id].id);
+            body.style.zIndex = '999'
+
             body.addEventListener('mousemove', octo.move);
             
         }else{
@@ -343,6 +460,7 @@ let octo = {
             r = octo.changeValue(r, end.r)
             g = octo.changeValue(g, end.g)
             b = octo.changeValue(b, end.b)
+            console.log(r)
             max--;
             head.style.backgroundColor = 'rgb('+ r + ',' + g + ',' + b +')';
             head.style.color = 'white';
@@ -357,12 +475,12 @@ let octo = {
             }
         }, 10)
     },
-    changeValue: function(value, end){
+    changeValue: function(value, end, x = 1){
         if(value > end){
-            value--;
+            value -= x;
             return value
         }else{
-             value++
+             value += x;
              return value
         }
     },
@@ -474,18 +592,64 @@ let view = {
     render: function(){
         let windows = octo.getWindows();
         //console.log(windows)
+        
         for(let window of windows){
             
             let key = Object.keys(window)
             let elem = document.getElementById(window[key].id)
-            elem.style.left = window[key].left + 'px';
-            elem.style.top = window[key].top + 'px';
+            let left = elem.style.left.slice(0, -2) * 1;
+            let top = elem.style.top.slice(0, -2) * 1;
+            let absLeft = Math.abs(left - window[key].left)
+            //console.log(window, left * 1, window[key].left, 'abs: ', absLeft)
+            
+            let id = setInterval(function(){
+                
+                left = octo.changeValue(left, window[key].left, 3 )
+                top = octo.changeValue(top, window[key].top, 3 )
+                elem.style.left = left + 'px'
+                //elem.style.top = top + 'px'
+                //console.log(left)
+                if(left>=window[key].left ){
+                    clearInterval(id)
+                    elem.style.left = window[key].left + 'px';
+                    //elem.style.top = window[key].top + 'px';
+                }
+            },1)
+            let id1 = setInterval(function(){
+                
+                left = octo.changeValue(left, window[key].left, 3 )
+                top = octo.changeValue(top, window[key].top, 3 )
+               // elem.style.left = left + 'px'
+                elem.style.top = top + 'px'
+                //console.log(left)
+                if(top<=window[key].top ){
+                    clearInterval(id1)
+                    //elem.style.left = window[key].left + 'px';
+                    elem.style.top = window[key].top + 'px';
+                }
+            },1)
+            //elem.style.left = window[key].left + 'px';
+            //elem.style.top = window[key].top + 'px';
+
+        }
+    },
+    renderUp: function(){
+        let windows = octo.getWindows();
+        //console.log(windows)
+        
+        for(let window of windows){
+            
+            let key = Object.keys(window)
+            let elem = document.getElementById(window[key].id)
+            let left = elem.style.left.slice(0, -2) * 1;
+        elem.style.left = window[key].left + 'px';
+        elem.style.top = window[key].top + 'px';
         }
     },
     newNote: function(){
         octo.newWindow();
         octo.createDiv();
-        octo.setPos()
+        octo.setPosInit()
         view.init();
         view.render();  
     }
