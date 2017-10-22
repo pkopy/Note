@@ -80,7 +80,7 @@ let octo = {
     init: function(){
         model.init();
         view.init();
-        //octo.setPos();
+        octo.setPosInit();
         view.render();
         viewHead.init();
     },
@@ -89,8 +89,8 @@ let octo = {
         name = name + octo.getArrayLength();
         window[name] = {
             id: name,
-            col: 0,
-            row: 0,
+            col: '',
+            row: '',
             backgroundColor: {r: 255, g: 255, b: 255},
             position: 'absolute',
             zIndex: 999,
@@ -192,10 +192,10 @@ let octo = {
             let key = Object.keys(windows[i])[0];
             //let pos = windows[i][key].col;
             
-            sumWidth +=  300; 
+            sumWidth +=  330; 
             if(sumWidth >= window.innerWidth){
                 row++;
-                sumWidth = 300;
+                sumWidth = 330;
                 pos = 0;
                 
             }
@@ -269,6 +269,7 @@ let octo = {
     move: function (e){
         let windows = octo.getWindows();
         let objWindow;
+        console.log(e)
         let id = e.target.id;
         let obj = e.target;
         //console.log(obj.parentNode)
@@ -329,7 +330,7 @@ let octo = {
     mouseUpremove: function(obj){
         obj.removeEventListener('mousemove', octo.move);
         octo.setPos()
-        //view.render();
+        view.render();
     },
     mouseUp:function(obj){
         obj.removeEventListener('mousemove', octo.move);
@@ -657,17 +658,27 @@ let view = {
 };
 let viewHead = {
     init: function() {
+        //viewHead.initBody();
         window.addEventListener('scroll', function(){
             let head = document.getElementById('head')
             let body = document.documentElement
             let scroll = body.scrollTop
-            //console.log(scroll)
+            let resize = body.onresize = (x) => x + 1;
+            console.log(scroll)
             head.className = 'head'
             if(scroll === 0){
                 head.className ='';
             }
         })
         viewHead.render();
+    },
+    initBody: function(){
+        window.addEventListener("resize", function(){
+           octo.setPosInit();
+            view.render();
+        });
+        
+        
     },
     render: function() {
         let menus = document.getElementsByClassName('menuText') 
