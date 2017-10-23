@@ -269,24 +269,20 @@ let octo = {
     move: function (e){
         let windows = octo.getWindows();
         let objWindow;
-        
         let id = e.target.id;
         let obj = e.target;
-        //console.log(obj.parentNode)
         let clickX;
         let clickY;
         let x = e.clientX;
         let y = e.clientY;
         let arrHelp = []
-        //console.log(windows[id][id].col)
+        
         for(let window of windows){
-            
             let idObj = Object.keys(window)[0];
             arrHelp.push(window[idObj].col)
             if(Object.keys(window)[0] === id){
                 objWindow = window; 
             }
-
         }
         
        let maxCol = octo.max(arrHelp)
@@ -295,7 +291,6 @@ let octo = {
          for(let i = 0; i < windows.length; i++){
             let x = windows[i][i]
             let pos = octo.findPosition(windows[i][i], maxCol)
-            //console.log(x)
             allPos.push({
                 id: x.id,
                 pos: pos 
@@ -313,10 +308,11 @@ let octo = {
         let oldCol = windows[obj.id][obj.id].col
         let oldRow = windows[obj.id][obj.id].row
         let oldLeft = windows[obj.id][obj.id].left
+        let left1 = obj.parentNode.style.left.slice(0, -2)
        // console.log(obj.parentNode.previousSibling)
         console.log('old: ', oldCol, oldRow)
         for(let i = 0; i < maxCol; i++){
-        let left1 = obj.parentNode.style.left.slice(0, -2)
+        
         console.log(left1)
             if(oldLeft - left1 > 0){
                 if(left1 >= (20 - clickX + (i * 250)) && left1 <= (250 - clickX + (i * 250))  && windows[obj.id][obj.id].col !== i){
@@ -342,6 +338,9 @@ let octo = {
                     view.render();
                 }
             }
+        }
+        for(let i = 0; i < maxCol + 1; i++){ 
+            
             if(oldLeft - left1 < 0){
                 if(left1 >= (20 - clickX + (i * 250)) && left1 <= (250 - clickX + (i * 250))  && windows[obj.id][obj.id].col !== i){
                     x = i;
@@ -392,38 +391,9 @@ let octo = {
         let windowCopy;
         let windows = octo.getWindows();
         let left = obj.style.left.slice(0, -2)
-       // console.log('left: ', left)
-       // console.log('oryginal: ', windows[obj.id][obj.id].id)
-       /*if(left >= 20 && left <= 150 && windows[obj.id][obj.id].col !== 0){
-            x = 0;
-            windows[obj.id][obj.id].col = x;
-            console.log('a')
-            //console.log(windows[obj.id][obj.id].col)
-            windowCopy = windows[obj.id];
-            //console.log('copy: ', windows[obj.id])
-            //windows.splice(windows[obj.id], 1)
-            for(let window of windows){
-                let key = Object.keys(window)
-                let colStart = windows[key][key].col
-                if(key[0] !== windows[obj.id][obj.id].id){
-                    console.log(colStart)
-                    
-                    if(colStart !== windows.length - 1)
-                        windows[key][key].col = colStart + 1;
-                    
-                    
-                    //console.log(window[key].col)
-                    x++
-                }
-                
-            }
-            
-            
-        }
-       //windows.splice(x, 0, windowCopy)
-        model.change(windows)
-        octo.setPos();*/
+        //octo.setPos();
         view.render();
+        console.log(windows)
         
     },
     mouseDown: function (e){
@@ -666,7 +636,7 @@ let view = {
                 //console.log(left)
                 if(left < window[key].left){
                     elem.style.left = left + 'px'
-                    if(left>=window[key].left ){
+                    if(left + 5>=window[key].left ){
                         clearInterval(id)
                         elem.style.left = window[key].left + 'px';
                         //elem.style.top = window[key].top + 'px';
@@ -717,6 +687,7 @@ let view = {
         octo.setPosInit()
         view.init();
         view.render();  
+        console.log('nowa')
     }
 
 };
