@@ -342,7 +342,7 @@ let octo = {
         for(let i = 0; i < maxCol + 1; i++){ 
             
             if(oldLeft - left1 < 0){
-                if(left1 >= (20 - clickX + (i * 250)) && left1 <= (250 - clickX + (i * 250))  && windows[obj.id][obj.id].col !== i){
+                if(left1 >= (20 + (i * 250)) && left1 <= (250  + (i * 250))  && windows[obj.id][obj.id].col !== i){
                     x = i;
                     windows[obj.id][obj.id].col = x;
                     let key = Object.keys(windows[obj.id])
@@ -587,7 +587,15 @@ let view = {
             palette.style.left = '10px';
             palette.style.bottom = '37px';
             palette.style.display = 'block'
-            icon.style.opacity = '1'
+            let x = 0;
+            /*let id = setInterval(function(){
+                x = x + 0.01;
+                icon.style.opacity = x;
+                if(x >= 1){
+                    clearInterval(id)
+                }
+            },10);*/
+            icon.style.opacity = 1;
             let backColor = this.parentNode.parentNode.parentNode
             icon.appendChild(palette)
             icon.parentNode.parentNode.parentNode.removeEventListener('mousedown', octo.mouseDown);
@@ -612,6 +620,8 @@ let view = {
                 icon.parentNode.parentNode.parentNode.addEventListener('mousedown', octo.mouseDown);
             })
        }
+       
+       
     },
     
     render: function(){
@@ -636,14 +646,14 @@ let view = {
                 //console.log(left)
                 if(left < window[key].left){
                     elem.style.left = left + 'px'
-                    if(left + 5>window[key].left ){
+                    if(left + 10>window[key].left ){
                         clearInterval(id)
                         elem.style.left = window[key].left + 'px';
                         //elem.style.top = window[key].top + 'px';
                     }  
                 }else{
                     elem.style.left = left + 'px'
-                    if(left-10<window[key].left ){
+                    if(left - 10<window[key].left ){
                         clearInterval(id)
                         elem.style.left = window[key].left + 'px';
                     }
