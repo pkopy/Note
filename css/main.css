@@ -92,6 +92,7 @@ h4{
     position: relative;
     left:250px;
     width: auto;
+    height: 100%;
 }
 .col-left{
     width:250px;
@@ -119,3 +120,12 @@ h4{
     float: left;
     padding: 7px;
 }
+.icon:hover{
+    cursor: pointer;
+    
+}
+.iconLeft{
+    float: left;
+    padding: 7px;
+}
+

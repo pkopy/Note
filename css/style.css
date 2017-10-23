@@ -4,6 +4,11 @@ body{
     color: #5a5a51;
     font-weight: 300;
     overflow-x: hidden;
+    user-select: none;
+	-moz-user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+	
 
 }
 .text-muted{
@@ -27,6 +32,7 @@ body{
     
 }
 .widget {
+    display: inline-block;
     user-select: none;
 	-moz-user-select:none;
     -webkit-user-select:none;
@@ -40,10 +46,17 @@ body{
     position: fixed;
     top: 0;
     left: 0; 
+    z-index: 1000;
 }
 .head{
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    z-index:100;
+    height: 64px;
+    width: 100%; 
+    background-color: rgb(102,187,65);
+    position: fixed;
+    top: 0;
+    left: 0; 
+    z-index: 1000;
 }
 #left{
     position: fixed;
@@ -51,4 +64,75 @@ body{
     top:75px;
     float: left;
     height: 100%;
+}
+#user{
+    height:50px; 
+    width: 50px; 
+    margin:7px;
+    border: 3px solid #b5bdb4;
+    border-radius: 25px;
+    background-color: yellowgreen;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.tools{
+    visibility: hidden;
+    
+}
+.tools1{
+    visibility: visible;
+    background-color: rgba(247, 247, 247, 0.5)
+}
+#palette{
+    position: fixed;
+    height: 100px;
+    width: 155px;
+    display: none;
+    background-color: #e8e8e8;
+    opacity: 1;
+}
+.colors{
+    height:40px; 
+    width: 40px; 
+    margin:7px;
+    border: 3px solid #b5bdb4;
+    border-radius: 25px;
+    position: absolute;
+    
+    
+}
+#white{
+    background-color: white;
+    left: 0px;
+}
+#red{
+    background-color: rgb(245, 151, 151);
+    left: 50px;
+}
+#blue{
+    background-color: rgb(152, 152, 255);
+    left: 100px;
+}
+#green{
+    background-color: rgb(210, 248, 148);
+    left: 0px;
+    top: 50px;
+}
+#yellow{
+    background-color: rgb(253, 253, 0);
+    left: 50px;
+    top: 50px;
+    
+}
+#pink{
+    background-color: pink;
+    left: 100px;
+    top: 50px;
+}
+#headText{
+    position: absolute;
+    width: 200px;
+     left: 50px
 }
