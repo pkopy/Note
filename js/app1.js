@@ -269,7 +269,7 @@ let octo = {
     move: function (e){
         let windows = octo.getWindows();
         let objWindow;
-        console.log(e)
+        
         let id = e.target.id;
         let obj = e.target;
         //console.log(obj.parentNode)
@@ -277,13 +277,31 @@ let octo = {
         let clickY;
         let x = e.clientX;
         let y = e.clientY;
+        let arrHelp = []
+        //console.log(windows[id][id].col)
         for(let window of windows){
             
+            let idObj = Object.keys(window)[0];
+            arrHelp.push(window[idObj].col)
             if(Object.keys(window)[0] === id){
                 objWindow = window; 
             }
 
         }
+        
+       let maxCol = octo.max(arrHelp)
+       let position = octo.findPosition(obj, maxCol) 
+       let allPos = []; 
+         for(let i = 0; i < windows.length; i++){
+            let x = windows[i][i]
+            let pos = octo.findPosition(windows[i][i], maxCol)
+            //console.log(x)
+            allPos.push({
+                id: x.id,
+                pos: pos 
+            });
+         } 
+        console.log(position)
         let bod = document.documentElement
         let scroll = bod.scrollTop
         clickX = objWindow[id].posX;
@@ -292,40 +310,76 @@ let octo = {
         let left = document.getElementById('left');
         body.style.left = x - clickX -250  + 'px';
         body.style.top = y  - clickY - 50 + scroll +'px';
-        
+        let oldCol = windows[obj.id][obj.id].col
+        let oldRow = windows[obj.id][obj.id].row
+        let oldLeft = windows[obj.id][obj.id].left
+       // console.log(obj.parentNode.previousSibling)
+        console.log('old: ', oldCol, oldRow)
+        for(let i = 0; i < maxCol; i++){
         let left1 = obj.parentNode.style.left.slice(0, -2)
-        if(left1 >= (20 - clickX ) && left1 <= (250 - clickX)  && windows[obj.id][obj.id].col !== 0){
-            console.log('aaaaa')
-            let oldCol = windows[obj.id][obj.id].col
-            let oldRow = windows[obj.id][obj.id].row
-            x = 0;
-            windows[obj.id][obj.id].col = x;
-            console.log('a')
-            //console.log(windows[obj.id][obj.id].col)
-            windowCopy = windows[obj.id];
-            //console.log('copy: ', windows[obj.id])
-            //windows.splice(windows[obj.id], 1)
-            for(let window of windows){
-                let key = Object.keys(window)
-                let colStart = windows[key][key].col
-                let rowStart = windows[key][key].row
-                if(key[0] !== windows[obj.id][obj.id].id){
-                    console.log(colStart)
+        console.log(left1)
+            if(oldLeft - left1 > 0){
+                if(left1 >= (20 - clickX + (i * 250)) && left1 <= (250 - clickX + (i * 250))  && windows[obj.id][obj.id].col !== i){
+                    x = i;
+                    windows[obj.id][obj.id].col = x;
+                    let key = Object.keys(windows[obj.id])
+                    console.log('id: ', windows[obj.id][obj.id])
+                    let colStart = windows[key][key].col
+                    let rowStart = windows[key][key].row
+                    // if(key[0] !== windows[obj.id][obj.id].id){
+                        
+                    console.log('id: ', id,' colstart: ', colStart)
                     
-                    if(colStart < oldCol && rowStart === oldRow)
-                        windows[key][key].col = colStart + 1;
-                    
-                    
-                    //console.log(window[key].col)
-                    x++
+                            for(let allPo of allPos){
+                                if((allPo.pos + 1) === position){
+                                    console.log(allPos)
+                                windows[allPo.id][allPo.id].col = colStart + 1
+                                }
+                            }
+                            
+                    model.change(windows)
+                    octo.setPos();
+                    view.render();
                 }
-                
             }
-            model.change(windows)
-            octo.setPos();
-            view.render();
-        }
+            if(oldLeft - left1 < 0){
+                if(left1 >= (20 - clickX + (i * 250)) && left1 <= (250 - clickX + (i * 250))  && windows[obj.id][obj.id].col !== i){
+                    x = i;
+                    windows[obj.id][obj.id].col = x;
+                    let key = Object.keys(windows[obj.id])
+                    console.log('id: ', windows[obj.id][obj.id])
+                    let colStart = windows[key][key].col
+                    let rowStart = windows[key][key].row
+                    // if(key[0] !== windows[obj.id][obj.id].id){
+                        
+                    console.log('id: ', id,' colstart: ', colStart)
+                    
+                            for(let allPo of allPos){
+                                if((allPo.pos - 1) === position){
+                                    console.log(allPos)
+                                windows[allPo.id][allPo.id].col = colStart - 1
+                                }
+                            }
+                            
+                    model.change(windows)
+                    octo.setPos();
+                    view.render();
+                }
+            }
+        }    
         
+    },
+    max: function(arr){
+        let maxCallback = (max, cur) => Math.max(max, cur); 
+        let maxCol = arr.reduce(maxCallback)
+        return maxCol;
+    },
+    findPosition: function(obj, max){
+        let windows = octo.getWindows();
+        let col = windows[obj.id][obj.id].col;
+        let row  = windows[obj.id][obj.id].row;
+        let pos = (col + (row * (max + 1)))
+        return pos;
     },
     mouseUpremove: function(obj){
         obj.removeEventListener('mousemove', octo.move);
@@ -607,14 +661,24 @@ let view = {
                 
                 left = octo.changeValue(left, window[key].left, 3 )
                 top = octo.changeValue(top, window[key].top, 3 )
-                elem.style.left = left + 'px'
+                
                 //elem.style.top = top + 'px'
                 //console.log(left)
-                if(left>=window[key].left ){
-                    clearInterval(id)
-                    elem.style.left = window[key].left + 'px';
-                    //elem.style.top = window[key].top + 'px';
+                if(left < window[key].left){
+                    elem.style.left = left + 'px'
+                    if(left>=window[key].left ){
+                        clearInterval(id)
+                        elem.style.left = window[key].left + 'px';
+                        //elem.style.top = window[key].top + 'px';
+                    }  
+                }else{
+                    elem.style.left = left + 'px'
+                    if(left-10<=window[key].left ){
+                        clearInterval(id)
+                        elem.style.left = window[key].left + 'px';
+                    }
                 }
+                
             },1)
             let id1 = setInterval(function(){
                 
