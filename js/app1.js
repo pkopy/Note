@@ -629,21 +629,21 @@ let view = {
             
             let id = setInterval(function(){
                 
-                left = octo.changeValue(left, window[key].left, 3 )
-                top = octo.changeValue(top, window[key].top, 3 )
+                left = octo.changeValue(left, window[key].left, 8 )
+                
                 
                 //elem.style.top = top + 'px'
                 //console.log(left)
                 if(left < window[key].left){
                     elem.style.left = left + 'px'
-                    if(left + 5>=window[key].left ){
+                    if(left + 5>window[key].left ){
                         clearInterval(id)
                         elem.style.left = window[key].left + 'px';
                         //elem.style.top = window[key].top + 'px';
                     }  
                 }else{
                     elem.style.left = left + 'px'
-                    if(left-10<=window[key].left ){
+                    if(left-10<window[key].left ){
                         clearInterval(id)
                         elem.style.left = window[key].left + 'px';
                     }
@@ -652,12 +652,10 @@ let view = {
             },1)
             let id1 = setInterval(function(){
                 
-                left = octo.changeValue(left, window[key].left, 3 )
                 top = octo.changeValue(top, window[key].top, 3 )
-               // elem.style.left = left + 'px'
                 elem.style.top = top + 'px'
                 //console.log(left)
-                if(top<=window[key].top ){
+                if(top -5 <= window[key].top){
                     clearInterval(id1)
                     //elem.style.left = window[key].left + 'px';
                     elem.style.top = window[key].top + 'px';
