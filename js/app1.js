@@ -83,9 +83,11 @@ let octo = {
         octo.setPosInit();
         view.render();
         viewHead.init();
+        
     },
     newWindow: function(name = '', width = 250, height = 300){
         let window = {}
+        
         name = name + octo.getArrayLength();
         window[name] = {
             id: name,
@@ -101,11 +103,29 @@ let octo = {
             posX: 0,
             posY: 0,
             cursor: '',
-            title: '',
-            content: '',
+            title: 'Tytuł',
+            content: 'dowolony text tratatattat.........',
+            date: octo.date()
         }
         model.add(window)
        
+    },
+    date: function(){
+        let date = new Date();
+        let day = ['Nd', 'Pon', 'Wto', 'Śr', 'Czw', 'Pt', 'So'];
+        let month = ['Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'];
+        let minutes = date.getMinutes();
+        let sec = date.getSeconds()
+        function zero(number){
+            if(number < 10){
+                return number = '0' + number;
+            }else{
+                return number
+            }
+        }
+        
+        return date.getHours() + ':' + zero(minutes) + ':' + zero(sec) +' - ' + 
+        date.getDate() + ' ' + month[date.getMonth()] + ' ' + date.getFullYear()
     },
     createDiv: function(){
         let windows = model.arrayWindows();
@@ -154,7 +174,6 @@ let octo = {
                     toolsDiv.style.width = '100%';
                     toolsDiv.style.padding = '2px' 
                     toolsDiv.style.bottom = '0px';
-                    //toolsDiv.style.visibility = "hidden"
                     let icon1 = document.createElement('span');
                     icon1.className = 'material-icons md 36 icon xx';
                     icon1.innerHTML = 'palette'
@@ -165,16 +184,26 @@ let octo = {
                     icon2.innerHTML = 'delete'
                     icon2.style.opacity ='0.6'
                     icon2.id = window[key].id
-                    //icon1.style.opacity ='0.5'
                     toolsDiv.appendChild(icon1)
                     toolsDiv.appendChild(icon2)
-                    helpDiv.appendChild(toolsDiv)
                     
-                    //noteDiv.style.top = '100px'
-                    txt = document.createElement('h1');
-                    txt.innerHTML = window[key].id;
+                    let txt = document.createElement('h1');
+                    txt.className = 'title'
+                    txt.innerHTML = window[key].title;
+                    let dateTxt = document.createElement('p')
+                    dateTxt.innerHTML = window[key].date
+                    dateTxt.className = 'date'
+                    let contentTxt = document.createElement('p');
+                    contentTxt.innerHTML = window[key].content;
+                    contentTxt.className = 'content'
+                   
                     noteDiv.appendChild(txt);
+                    
+                    noteDiv.appendChild(dateTxt);
+                    noteDiv.appendChild(contentTxt);
+                    helpDiv.appendChild(toolsDiv)
                     noteDiv.appendChild(helpDiv)
+                    
                     document.getElementById('notes').appendChild(noteDiv)
                 }
                 
@@ -208,18 +237,13 @@ let octo = {
             
         }
         model.change(windows)
-        console.log(windows)
-        console.log(sumWidth)
-        console.log(window.innerWidth)
     },
     newSetPos:function(){
         let windows = model.arrayWindows();
         let lastWindow = windows[windows.length - 2][windows.length - 2];
-        //console.log(lastWindow)
         let pos = lastWindow.col;
         let row = lastWindow.row;
         let sumWidth = 300 + pos * 300
-        console.log(sumWidth)
         if(windows.length === 1){
             octo.setPosInit()
         
@@ -231,7 +255,6 @@ let octo = {
             windows[windows.length - 1][windows.length - 1].left = 20 + pos * 250 + 20 * pos;
             windows[windows.length - 1][windows.length - 1].col = pos;
             windows[windows.length - 1][windows.length - 1].row = row;
-            console.log(pos)
         }else{
             pos++
             windows[windows.length-1][windows.length-1].top = 50 + row * 300 + 20 * row;
@@ -251,20 +274,12 @@ let octo = {
             let key = Object.keys(windows[i])[0];
             let pos = windows[i][key].col;
             let row = windows[i][key].row;
-            
-            
             windows[i][key].top = 50 + row * 300 + 20 * row;
             windows[i][key].left = 20 + pos * 250 + 20 * pos;
            // windows[i][key].col = pos;
            // windows[i][key].row = row;
-            
-            
         }
         model.change(windows)
-        
-        //console.log(windows)
-       // console.log(sumWidth)
-       // console.log(window.innerWidth)
     },
     move: function (e){
         let windows = octo.getWindows();
@@ -295,8 +310,7 @@ let octo = {
                 id: x.id,
                 pos: pos 
             });
-         } 
-        console.log(position)
+        } 
         let bod = document.documentElement
         let scroll = bod.scrollTop
         clickX = objWindow[id].posX;
@@ -309,30 +323,19 @@ let octo = {
         let oldRow = windows[obj.id][obj.id].row
         let oldLeft = windows[obj.id][obj.id].left
         let left1 = obj.parentNode.style.left.slice(0, -2)
-       // console.log(obj.parentNode.previousSibling)
-        console.log('old: ', oldCol, oldRow)
         for(let i = 0; i < maxCol; i++){
-        
-        console.log(left1)
             if(oldLeft - left1 > 0){
                 if(left1 >= (20 - clickX + (i * 250)) && left1 <= (250 - clickX + (i * 250))  && windows[obj.id][obj.id].col !== i){
                     x = i;
                     windows[obj.id][obj.id].col = x;
                     let key = Object.keys(windows[obj.id])
-                    console.log('id: ', windows[obj.id][obj.id])
                     let colStart = windows[key][key].col
                     let rowStart = windows[key][key].row
-                    // if(key[0] !== windows[obj.id][obj.id].id){
-                        
-                    console.log('id: ', id,' colstart: ', colStart)
-                    
-                            for(let allPo of allPos){
-                                if((allPo.pos + 1) === position){
-                                    console.log(allPos)
+                        for(let allPo of allPos){
+                            if((allPo.pos + 1) === position){
                                 windows[allPo.id][allPo.id].col = colStart + 1
-                                }
                             }
-                            
+                        }    
                     model.change(windows)
                     octo.setPos();
                     view.render();
@@ -340,26 +343,18 @@ let octo = {
             }
         }
         for(let i = 0; i < maxCol + 1; i++){ 
-            
             if(oldLeft - left1 < 0){
                 if(left1 >= (20 + (i * 250)) && left1 <= (250  + (i * 250))  && windows[obj.id][obj.id].col !== i){
                     x = i;
                     windows[obj.id][obj.id].col = x;
                     let key = Object.keys(windows[obj.id])
-                    console.log('id: ', windows[obj.id][obj.id])
                     let colStart = windows[key][key].col
                     let rowStart = windows[key][key].row
-                    // if(key[0] !== windows[obj.id][obj.id].id){
-                        
-                    console.log('id: ', id,' colstart: ', colStart)
-                    
-                            for(let allPo of allPos){
-                                if((allPo.pos - 1) === position){
-                                    console.log(allPos)
+                        for(let allPo of allPos){
+                            if((allPo.pos - 1) === position){
                                 windows[allPo.id][allPo.id].col = colStart - 1
-                                }
-                            }
-                            
+                             }
+                        }    
                     model.change(windows)
                     octo.setPos();
                     view.render();
@@ -391,21 +386,13 @@ let octo = {
         let windowCopy;
         let windows = octo.getWindows();
         let left = obj.style.left.slice(0, -2)
-        //octo.setPos();
         view.render();
-        console.log(windows)
-        
     },
     mouseDown: function (e){
         let windows = octo.getWindows();
         let objWindow;
         let id = e.target.id;
         e.stopPropagation();
-        //console.log(windows[id][id].col)
-        for(let i = 0; i < windows.length; i++){
-           // console.log(windows)
-          // windows[i][i].col = 0;
-        }
         for(let window of windows){
             if(Object.keys(window)[0] === id){
                 let body = document.getElementById(window[id].id)
@@ -416,8 +403,6 @@ let octo = {
                 window[id].left = parseInt(body.style.left.slice(0,-2));
                 model.change(windows)  
             }
-            
-            
         }
         if(id !== '' && !isNaN(id)){
             let widgets = document.querySelectorAll('.widget');
@@ -435,8 +420,7 @@ let octo = {
     },
     getWindows: () => model.arrayWindows(),
     getArrayLength: () => model.arrayWindows().length,
-    changeColor1: function(start, end, elem){
-        
+    changeColor1: function(start, end, elem){    
         let r = start.r;
         let g = start.g;
         let b = start.b;
@@ -475,7 +459,6 @@ let octo = {
         for(let menu of menuLeft){
             elem.removeEventListener('click', viewHead.renderHead)
         }
-        
         let absR = Math.abs(r-end.r)
         let absG = Math.abs(g-end.g)
         let absB = Math.abs(b-end.b)
@@ -518,7 +501,6 @@ let octo = {
     getColor: function(id){
         return model[id];
     },
-    
     changeColorNote: function(e){
         let obj = e;
         obj.target.removeEventListener('click', octo.changeColorNote)
@@ -558,7 +540,6 @@ let view = {
         let newNote = document.getElementById('newNote')
         newNote.addEventListener('click',view.newNote)
         let windows = octo.getWindows();
-       
         for(let window of windows){
             let key = Object.keys(window)
             let elem = document.getElementById(window[key].id)
@@ -566,10 +547,11 @@ let view = {
             elem.style.top = window[key].top + 'px';
             elem.style.backgroundColor = 'rgb(' + window[key].backgroundColor.r + ',' + window[key].backgroundColor.g + ',' + window[key].backgroundColor.b + ')';
             elem.addEventListener('mousedown', octo.mouseDown);
-            let tool = elem.childNodes[1].firstChild;
+            let tool = elem.childNodes[3].firstChild;
             let icon1 = tool.firstChild;
             elem.addEventListener('mouseover', function(){
                tool.className = 'tools1'
+               
             })
             elem.addEventListener('mouseout', function(){
                 tool.className = 'tools'
@@ -587,14 +569,6 @@ let view = {
             palette.style.left = '10px';
             palette.style.bottom = '37px';
             palette.style.display = 'block'
-            let x = 0;
-            /*let id = setInterval(function(){
-                x = x + 0.01;
-                icon.style.opacity = x;
-                if(x >= 1){
-                    clearInterval(id)
-                }
-            },10);*/
             icon.style.opacity = 1;
             let backColor = this.parentNode.parentNode.parentNode
             icon.appendChild(palette)
@@ -626,30 +600,19 @@ let view = {
     
     render: function(){
         let windows = octo.getWindows();
-        //console.log(windows)
-        
         for(let window of windows){
-            
             let key = Object.keys(window)
             let elem = document.getElementById(window[key].id)
             let left = elem.style.left.slice(0, -2) * 1;
             let top = elem.style.top.slice(0, -2) * 1;
             let absLeft = Math.abs(left - window[key].left)
-            //console.log(window, left * 1, window[key].left, 'abs: ', absLeft)
-            
             let id = setInterval(function(){
-                
-                left = octo.changeValue(left, window[key].left, 8 )
-                
-                
-                //elem.style.top = top + 'px'
-                //console.log(left)
+            left = octo.changeValue(left, window[key].left, 8 )
                 if(left < window[key].left){
                     elem.style.left = left + 'px'
                     if(left + 10>window[key].left ){
                         clearInterval(id)
                         elem.style.left = window[key].left + 'px';
-                        //elem.style.top = window[key].top + 'px';
                     }  
                 }else{
                     elem.style.left = left + 'px'
@@ -658,30 +621,21 @@ let view = {
                         elem.style.left = window[key].left + 'px';
                     }
                 }
-                
             },1)
             let id1 = setInterval(function(){
                 
                 top = octo.changeValue(top, window[key].top, 3 )
                 elem.style.top = top + 'px'
-                //console.log(left)
                 if(top -5 <= window[key].top){
                     clearInterval(id1)
-                    //elem.style.left = window[key].left + 'px';
                     elem.style.top = window[key].top + 'px';
                 }
             },1)
-            //elem.style.left = window[key].left + 'px';
-            //elem.style.top = window[key].top + 'px';
-
         }
     },
     renderUp: function(){
         let windows = octo.getWindows();
-        //console.log(windows)
-        
         for(let window of windows){
-            
             let key = Object.keys(window)
             let elem = document.getElementById(window[key].id)
             let left = elem.style.left.slice(0, -2) * 1;
@@ -695,13 +649,11 @@ let view = {
         octo.setPosInit()
         view.init();
         view.render();  
-        console.log('nowa')
     }
 
 };
 let viewHead = {
     init: function() {
-        //viewHead.initBody();
         window.addEventListener('scroll', function(){
             let head = document.getElementById('head')
             let body = document.documentElement
@@ -719,9 +671,7 @@ let viewHead = {
         window.addEventListener("resize", function(){
            octo.setPosInit();
             view.render();
-        });
-        
-        
+        }); 
     },
     render: function() {
         let menus = document.getElementsByClassName('menuText') 
