@@ -468,7 +468,6 @@ let octo = {
             r = octo.changeValue(r, end.r)
             g = octo.changeValue(g, end.g)
             b = octo.changeValue(b, end.b)
-            console.log(r)
             max--;
             head.style.backgroundColor = 'rgb('+ r + ',' + g + ',' + b +')';
             head.style.color = 'white';
@@ -685,7 +684,6 @@ let viewHead = {
         let endId = e.target.id
         let end = octo.getColor(endId)
         let start = model.head.start
-        console.log('head color start: ' + start.r + ':'+ start.g + ':' + start.b)
         octo.changeColor(start, end, elem)
     }
 }
