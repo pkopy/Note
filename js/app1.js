@@ -103,8 +103,8 @@ let octo = {
             posX: 0,
             posY: 0,
             cursor: '',
-            title: 'Tytuł',
-            content: 'dowolony text tratatattat.........',
+            title: '',
+            content: '',
             date: octo.date()
         }
         model.add(window)
@@ -529,8 +529,62 @@ let octo = {
                 
             }
         }
+    },
+    clickNote: function(e){
+        let windows = octo.getWindows();
+        let id = e.target.parentNode.id
+        let obj = windows[id]
+        let body = document.getElementById(id)
+        console.log(windows[id][id].backgroundColor)
+        body.removeEventListener('mousedown', octo.mouseDown)
+        body.removeEventListener('mouseup', octo.mouseUp)
+        body.removeEventListener('mouseup', octo.mouseUpremove)
+        //windows[id][id].width = 400
+        //body.style.position = 'absolute'
+       // windows[id][id].left = 500
+       // windows[id][id].top = 300
+       // console.log(windows)
+       // model.change(windows);
+       // console.log(windows)
+        body.style.display = 'none' 
+        let divWrite = document.createElement('div')
+        divWrite.style.width = '400px';
+        divWrite.style.height = '300px';
+        divWrite.style.position = 'absolute'
+        divWrite.style.left = window.innerWidth/2 - 200 + 'px';
+        divWrite.style.top = window.innerHeight/2 - 200 + 'px';
+        divWrite.style.border = '1px solid black'
+        let {r,g,b} = windows[id][id].backgroundColor
+        let tytul = windows[id][id].title
+        divWrite.style.backgroundColor = `rgb(${r}, ${g}, ${b})`
+        let title = document.createElement('input')
+        title.style.fontSize = '20px';
+        title.placeholder = 'Tytuł'
+        title.value = tytul;
+        title.style.padding = '20px 0px 10px 20px'
+        title.style.border = 'none'
+        title.style.outline = 'none'
+        let dateTxt = document.createElement('p')
+        dateTxt.innerHTML = windows[id][id].date
+        dateTxt.className = 'date1'
+        title.style.backgroundColor = `rgb(${r}, ${g}, ${b})`
+        let textContent = document.createElement('textarea')
+        textContent.style.fontSize = '20px';
+        textContent.placeholder = 'Tytuł'
+        textContent.value = tytul;
+        textContent.style.padding = '20px 0px 10px 20px'
+        textContent.style.border = 'none'
+        textContent.style.resize = 'none'
+        textContent.style.outline = 'none'
+        textContent.style.width = '380px'
+        textContent.style.height = '200px';
+        textContent.style.backgroundColor = `rgb(${r}, ${g}, ${b})`
+        divWrite.appendChild(title)
+        divWrite.appendChild(dateTxt)
+        divWrite.appendChild(textContent)
+        document.getElementsByTagName('body')[0].appendChild(divWrite)
+        
     }
-
 }
 /*===VIEW===*/
 let view = {
@@ -546,11 +600,13 @@ let view = {
             elem.style.top = window[key].top + 'px';
             elem.style.backgroundColor = 'rgb(' + window[key].backgroundColor.r + ',' + window[key].backgroundColor.g + ',' + window[key].backgroundColor.b + ')';
             elem.addEventListener('mousedown', octo.mouseDown);
+            elem.addEventListener('dblclick', octo.clickNote);
+            
             let tool = elem.childNodes[3].firstChild;
             let icon1 = tool.firstChild;
             elem.addEventListener('mouseover', function(){
                tool.className = 'tools1'
-               
+               //elem.className = 'widget1'
             })
             elem.addEventListener('mouseout', function(){
                 tool.className = 'tools'

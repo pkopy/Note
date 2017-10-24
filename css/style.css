@@ -32,6 +32,7 @@ body{
     
 }
 .widget {
+    cursor: auto;
     display: inline-block;
     user-select: none;
 	-moz-user-select:none;
@@ -160,10 +161,20 @@ body{
     font-size: 14px;
     padding-left: 10px;
 }
+.date1{
+    border: 0px;
+    margin: 0px;
+    text-align: left;
+    font-size: 14px;
+    padding-left: 20px;
+}
 .content{
     border: 0px;
     margin: 10px 0px 0px 0px;
     text-align: left;
     font-size: 16px;
     padding-left: 10px;
+}
+input:focus {
+    background-color: rgb(148, 248, 210);
 }
