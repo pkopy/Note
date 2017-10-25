@@ -129,7 +129,6 @@ let octo = {
     },
     createDiv: function(){
         let windows = model.arrayWindows();
-        //console.log(windows)
         let widgets = document.querySelectorAll('.widget')
         
             for(let window of windows){
@@ -137,7 +136,6 @@ let octo = {
                 let key = Object.keys(window)
                 
                 for(let i = 0; i < widgets.length; i++){
-                   // console.log(widgets[i].id)
                     if(widgets[i].id === key[0]){
                         flag++;
                     }
@@ -286,6 +284,7 @@ let octo = {
         let objWindow;
         let id = e.target.id;
         let obj = e.target;
+        
         let clickX;
         let clickY;
         let x = e.clientX;
@@ -389,6 +388,7 @@ let octo = {
         view.render();
     },
     mouseDown: function (e){
+        
         let windows = octo.getWindows();
         let objWindow;
         let id = e.target.id;
@@ -535,27 +535,21 @@ let octo = {
         let id = e.target.parentNode.id
         let obj = windows[id]
         let body = document.getElementById(id)
-        console.log(windows[id][id].backgroundColor)
         body.removeEventListener('mousedown', octo.mouseDown)
         body.removeEventListener('mouseup', octo.mouseUp)
         body.removeEventListener('mouseup', octo.mouseUpremove)
-        //windows[id][id].width = 400
-        //body.style.position = 'absolute'
-       // windows[id][id].left = 500
-       // windows[id][id].top = 300
-       // console.log(windows)
-       // model.change(windows);
-       // console.log(windows)
         body.style.display = 'none' 
         let divWrite = document.createElement('div')
         divWrite.style.width = '400px';
         divWrite.style.height = '300px';
         divWrite.style.position = 'absolute'
+        divWrite.style.zIndex ='1002';
         divWrite.style.left = window.innerWidth/2 - 200 + 'px';
         divWrite.style.top = window.innerHeight/2 - 200 + 'px';
         divWrite.style.border = '1px solid black'
         let {r,g,b} = windows[id][id].backgroundColor
         let tytul = windows[id][id].title
+        let content = windows[id][id].content
         divWrite.style.backgroundColor = `rgb(${r}, ${g}, ${b})`
         let title = document.createElement('input')
         title.style.fontSize = '20px';
@@ -571,7 +565,7 @@ let octo = {
         let textContent = document.createElement('textarea')
         textContent.style.fontSize = '16px';
         textContent.placeholder = 'Tutaj wpisz swoją notatkę...'
-        textContent.value = tytul;
+        textContent.value = content;
         textContent.style.padding = '20px 0px 10px 20px'
         textContent.style.border = 'none'
         textContent.style.resize = 'none'
@@ -579,11 +573,32 @@ let octo = {
         textContent.style.width = '380px'
         textContent.style.height = '200px';
         textContent.style.backgroundColor = `rgb(${r}, ${g}, ${b})`
+        let divBack = document.createElement('div')
+        divBack.style.height = '100%';
+        divBack.style.width = '110%';
+        divBack.style.position = 'fixed'
+        divBack.style.top = '0px';
+        divBack.style.left = '0px';
+        divBack.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        divBack.style.zIndex ='1001';
         divWrite.appendChild(title)
         divWrite.appendChild(dateTxt)
         divWrite.appendChild(textContent)
+        document.getElementsByTagName('body')[0].appendChild(divBack)
         document.getElementsByTagName('body')[0].appendChild(divWrite)
-        
+        divBack.addEventListener('click',function(){
+            windows[id][id].title = title.value;
+            windows[id][id].content = textContent.value
+            model.change(windows)
+            body.style.display = 'inline-block';
+            body.firstChild.innerHTML = windows[id][id].title
+            body.childNodes[2].innerHTML = windows[id][id].content
+            divBack.remove();
+            divWrite.remove();
+            body.addEventListener('mousedown', octo.mouseDown)
+            
+            
+        })
     }
 }
 /*===VIEW===*/
@@ -714,7 +729,6 @@ let viewHead = {
             let body = document.documentElement
             let scroll = body.scrollTop
             let resize = body.onresize = (x) => x + 1;
-            console.log(scroll)
             head.className = 'head'
             if(scroll === 0){
                 head.className ='';
