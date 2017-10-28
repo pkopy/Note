@@ -1,6 +1,40 @@
 (function(){
 /*===MODEL===*/
-let model = {
+    model = {
+    /*init: function(){
+       if (!myJSONfromFile) {
+           //console.log(myJSONfromFile)
+           myJSONfromFile = JSON.stringify([]);
+        }
+    },
+    arrayWindows: function(){
+        return JSON.parse(myJSONfromFile); 
+    },
+    add: function(obj){
+        data = JSON.parse(myJSONfromFile);
+        data.push(obj);
+        myJSONfromFile = JSON.stringify(data);
+    },
+    change: function(windows){
+        myJSONfromFile = JSON.stringify(windows);
+        //console.log(myJSONfromFile)
+       var xhr = new XMLHttpRequest();
+        //console.log('UNSENT', xhr.readyState); // readyState will be 0
+
+        xhr.open('POST', 'writeFile.php', true);
+        //console.log('OPENED', xhr.readyState); // readyState will be 1
+
+        xhr.onprogress = function () {
+        // console.log('LOADING', xhr.readyState); // readyState will be 3
+        };
+
+        xhr.onload = function () {
+         //   console.log('DONE', xhr.readyState); // readyState will be 4
+        };
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        //console.log(myJSONfromFile)
+        xhr.send("x=" + myJSONfromFile);
+        //console.log(xhr.send("x=" + myJSONfromFile))*/
     init: function(){
         if (!localStorage.notes) {
             localStorage.notes = JSON.stringify([]);
@@ -74,9 +108,9 @@ let model = {
         g: 192,
         b: 103
     }
-}
+};
 /*===OCTO===*/
-let octo = {
+    octo = {
     init: function(){
         model.init();
         view.init();
@@ -85,11 +119,11 @@ let octo = {
         viewHead.init();
         
     },
-    newWindow: function(name = '', width = 250, height = 300){
-        let window = {}
+    newWindow: function(name='', width = 250, height = 300){
+        windowNote = {};
         
         name = name + octo.getArrayLength();
-        window[name] = {
+        windowNote[name] = {
             id: name,
             col: '',
             row: '',
@@ -106,35 +140,35 @@ let octo = {
             title: '',
             content: '',
             date: octo.date()
-        }
-        model.add(window)
+        };
+        model.add(windowNote);
        
     },
     date: function(){
-        let date = new Date();
-        let day = ['Nd', 'Pon', 'Wto', 'Śr', 'Czw', 'Pt', 'So'];
-        let month = ['Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'];
-        let minutes = date.getMinutes();
-        let sec = date.getSeconds()
+        date = new Date();
+        day = ['Nd', 'Pon', 'Wto', 'Śr', 'Czw', 'Pt', 'So'];
+        month = ['Sty', 'Lut', 'Mar', 'Kwi', 'Maj', 'Cze', 'Lip', 'Sie', 'Wrz', 'Paź', 'Lis', 'Gru'];
+        minutes = date.getMinutes();
+        sec = date.getSeconds();
         function zero(number){
             if(number < 10){
-                return number = '0' + number;
+                number = '0' + number;
             }else{
-                return number
+                number
             }
+            return number;
         }
         
         return date.getHours() + ':' + zero(minutes) + ':' + zero(sec) +' - ' + 
         date.getDate() + ' ' + month[date.getMonth()] + ' ' + date.getFullYear()
     },
     createDiv: function(){
-        let windows = model.arrayWindows();
-        let widgets = document.querySelectorAll('.widget')
+        windows = model.arrayWindows();
+        widgets = document.querySelectorAll('.widget');
         
-            for(let window of windows){
+            for(let windowNote of windows){
                 let flag = 0;
-                let key = Object.keys(window)
-                
+                let key = Object.keys(windowNote);
                 for(let i = 0; i < widgets.length; i++){
                     if(widgets[i].id === key[0]){
                         flag++;
@@ -143,24 +177,24 @@ let octo = {
                 if(flag === 0){
                     
                     let noteDiv = document.createElement('div')
-                    noteDiv.id = window[key].id;
+                    noteDiv.id = windowNote[key].id;
                     
-                    noteDiv.style.position = window[key].position;
-                    noteDiv.style.width = window[key].width + 'px';
-                    noteDiv.style.height = window[key].height + 'px';
-                    noteDiv.style.top = window[key].top + 'px';
-                    noteDiv.style.left = window[key].left + 'px';
+                    noteDiv.style.position = windowNote[key].position;
+                    noteDiv.style.width = windowNote[key].width + 'px';
+                    noteDiv.style.height = windowNote[key].height + 'px';
+                    noteDiv.style.top = windowNote[key].top + 'px';
+                    noteDiv.style.left = windowNote[key].left + 'px';
                     noteDiv.style.boxShadow =' 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)';
-                    noteDiv.style.backgroundColor = window[key].backgroundColor;
+                    noteDiv.style.backgroundColor =windowNote[key].backgroundColor;
                     noteDiv.className = 'widget';
                     noteDiv.style.zIndex = 0;
                     noteDiv.style.border = '1px solid #ffffff';
                     noteDiv.style.borderRadius = '2px';
-                    let helpDiv = document.createElement('div')
-                    helpDiv.id = window[key].id;
-                    helpDiv.style.position = window[key].position;
-                    helpDiv.style.width = window[key].width - 2 + 'px';
-                    helpDiv.style.height = window[key].height -2 + 'px';
+                    var helpDiv = document.createElement('div');
+                    helpDiv.id = windowNote[key].id;
+                    helpDiv.style.position = windowNote[key].position;
+                    helpDiv.style.width = windowNote[key].width - 2 + 'px';
+                    helpDiv.style.height = windowNote[key].height -2 + 'px';
                     helpDiv.style.position = 'absolute'
                     helpDiv.style.top = '0px'
                     helpDiv.className = 'widgetHelp';
@@ -176,23 +210,23 @@ let octo = {
                     icon1.className = 'material-icons md 36 icon xx';
                     icon1.innerHTML = 'palette'
                     icon1.style.opacity ='0.6'
-                    icon1.id = window[key].id
+                    icon1.id = windowNote[key].id
                     let icon2 = document.createElement('span');
                     icon2.className = 'material-icons md 36 icon xx1';
                     icon2.innerHTML = 'delete'
                     icon2.style.opacity ='0.6'
-                    icon2.id = window[key].id
+                    icon2.id = windowNote[key].id
                     toolsDiv.appendChild(icon1)
                     toolsDiv.appendChild(icon2)
                     
                     let txt = document.createElement('h1');
                     txt.className = 'title'
-                    txt.innerHTML = window[key].title;
+                    txt.innerHTML = windowNote[key].title;
                     let dateTxt = document.createElement('p')
-                    dateTxt.innerHTML = window[key].date
+                    dateTxt.innerHTML = windowNote[key].date
                     dateTxt.className = 'date'
                     let contentTxt = document.createElement('p');
-                    contentTxt.innerHTML = window[key].content;
+                    contentTxt.innerHTML = windowNote[key].content;
                     contentTxt.className = 'content'
                    
                     noteDiv.appendChild(txt);
@@ -224,7 +258,6 @@ let octo = {
                 row++;
                 sumWidth = 330;
                 pos = 0;
-                
             }
             
             windows[i][key].top = 50 + row * 300 + 20 * row;
@@ -243,7 +276,7 @@ let octo = {
         let row = lastWindow.row;
         let sumWidth = 300 + pos * 300
         if(windows.length === 1){
-            octo.setPosInit()
+            octo.setPosInit();
         
         }else if(sumWidth >= window.innerWidth){
             row++;
@@ -254,7 +287,7 @@ let octo = {
             windows[windows.length - 1][windows.length - 1].col = pos;
             windows[windows.length - 1][windows.length - 1].row = row;
         }else{
-            pos++
+            pos++;
             windows[windows.length-1][windows.length-1].top = 50 + row * 300 + 20 * row;
             windows[windows.length-1][windows.length-1].left = 20 + pos * 250 + 20 * pos;
             windows[windows.length-1][windows.length-1].col = pos;
@@ -291,21 +324,17 @@ let octo = {
         let y = e.clientY;
         let arrHelpCol = [];
         let arrHelpRow = [];
-        
-        for(let window of windows){
-            let idObj = Object.keys(window)[0];
-            arrHelpCol.push(window[idObj].col);
-            arrHelpRow.push(window[idObj].row);
-            if(Object.keys(window)[0] === id){
-                objWindow = window; 
+        for(let windowNote of windows){
+            let idObj = Object.keys(windowNote)[0];
+            arrHelpCol.push(windowNote[idObj].col);
+            arrHelpRow.push(windowNote[idObj].row);
+            if(Object.keys(windowNote)[0] === id){
+                objWindow = windowNote; 
             }
         }
-        
+       let maxRow = octo.max(arrHelpRow);    
        let maxCol = octo.max(arrHelpCol);
-       let maxRow = octo.max(arrHelpRow);
-       console.log(maxRow)
-       let position = octo.findPosition(obj, maxCol) 
-       console.log(position)
+       let position = octo.findPosition(obj, maxCol) ;
        let allPos = []; 
          for(let i = 0; i < windows.length; i++){
             let x = windows[i][i]
@@ -320,7 +349,7 @@ let octo = {
         clickX = objWindow[id].posX;
         clickY = objWindow[id].posY;
         let body = document.getElementById(objWindow[id].id)
-        //let left = document.getElementById('left');
+        let left = document.getElementById('left');
         body.style.left = x - clickX -250  + 'px';
         body.style.top = y  - clickY - 50 + scroll +'px';
         let oldCol = windows[obj.id][obj.id].col
@@ -366,7 +395,7 @@ let octo = {
                     view.render();
                 }
             }
-        }
+        }    
         for(let i = 0; i < maxRow; i++){
             if(oldTop - top > 0){
                 if(top >= (50 - clickY + (i * 300)) && top <= (300 - clickY
@@ -407,7 +436,6 @@ let octo = {
                 }
             }
         }      
-        
     },
     max: function(arr){
         let maxCallback = (max, cur) => Math.max(max, cur); 
@@ -440,14 +468,14 @@ let octo = {
         let objWindow;
         let id = e.target.id;
         e.stopPropagation();
-        for(let window of windows){
-            if(Object.keys(window)[0] === id){
-                let body = document.getElementById(window[id].id)
-                objWindow = window;
-                window[id].posX = e.offsetX;
-                window[id].posY = e.offsetY;
-                window[id].top = parseInt(body.style.top.slice(0,-2));
-                window[id].left = parseInt(body.style.left.slice(0,-2));
+        for(let windowNote of windows){
+            if(Object.keys(windowNote)[0] === id){
+                let body = document.getElementById(windowNote[id].id)
+                objWindow = windowNote;
+                windowNote[id].posX = e.offsetX;
+                windowNote[id].posY = e.offsetY;
+                windowNote[id].top = parseInt(body.style.top.slice(0,-2));
+                windowNote[id].left = parseInt(body.style.left.slice(0,-2));
                 model.change(windows)  
             }
         }
@@ -486,10 +514,10 @@ let octo = {
                 clearInterval(id)
                 let idx = elem.id;
                 let windows = octo.getWindows();
-                for(let window of windows){
-                    if(Object.keys(window)[0] === idx){
-                        let body = document.getElementById(window[idx].id)
-                        window[idx].backgroundColor = end;
+                for(let windowNote of windows){
+                    if(Object.keys(windowNote)[0] === idx){
+                        let body = document.getElementById(windowNote[idx].id)
+                        windowNote[idx].backgroundColor = end;
                         model.change(windows)
                     }
                 }    
@@ -529,7 +557,8 @@ let octo = {
             }
         }, 10)
     },
-    changeValue: function(value, end, x = 1){
+    changeValue: function(value, end, x){
+        x = x || 1;
         if(value > end){
             value -= x;
             return value
@@ -555,10 +584,10 @@ let octo = {
         let id = obj.target.parentNode.parentNode.parentNode.parentNode.id
         let start
         let windows = octo.getWindows();
-        for(let window of windows){
-            if(Object.keys(window)[0] === id){
-                let body = document.getElementById(window[id].id)
-                start = window[id].backgroundColor
+        for(let windowNote of windows){
+            if(Object.keys(windowNote)[0] === id){
+                let body = document.getElementById(windowNote[id].id)
+                start = windowNote[id].backgroundColor
             }
         }    
         let end = octo.getColor(endId)
@@ -567,10 +596,10 @@ let octo = {
     delete: function(e){
         let windows = octo.getWindows();
         let id = e.target.parentNode.parentNode.parentNode.id
-        for(let window of windows){
-            if(Object.keys(window)[0] === id){
-                let body = document.getElementById(window[id].id)
-                start = window[id].backgroundColor
+        for(let windowNote of windows){
+            if(Object.keys(windowNote)[0] === id){
+                let body = document.getElementById(windowNote[id].id)
+                start = windowNote[id].backgroundColor
                 windows.splice(id, 1)
                 model.change(windows)
                 
@@ -594,7 +623,9 @@ let octo = {
         divWrite.style.left = window.innerWidth/2 - 200 + 'px';
         divWrite.style.top = window.innerHeight/2 - 200 + 'px';
         divWrite.style.border = '1px solid black'
-        let {r,g,b} = windows[id][id].backgroundColor
+        let r = windows[id][id].backgroundColor.r;
+         let g = windows[id][id].backgroundColor.g;
+          let b = windows[id][id].backgroundColor.b;
         let tytul = windows[id][id].title
         let content = windows[id][id].content
         divWrite.style.backgroundColor = `rgb(${r}, ${g}, ${b})`
@@ -655,12 +686,12 @@ let view = {
         let newNote = document.getElementById('newNote')
         newNote.addEventListener('click',view.newNote)
         let windows = octo.getWindows();
-        for(let window of windows){
-            let key = Object.keys(window)
-            let elem = document.getElementById(window[key].id)
-            elem.style.left = window[key].left + 'px';
-            elem.style.top = window[key].top + 'px';
-            elem.style.backgroundColor = 'rgb(' + window[key].backgroundColor.r + ',' + window[key].backgroundColor.g + ',' + window[key].backgroundColor.b + ')';
+        for(let windowNote of windows){
+            let key = Object.keys(windowNote)
+            let elem = document.getElementById(windowNote[key].id)
+            elem.style.left = windowNote[key].left + 'px';
+            elem.style.top = windowNote[key].top + 'px';
+            elem.style.backgroundColor = 'rgb(' + windowNote[key].backgroundColor.r + ',' + windowNote[key].backgroundColor.g + ',' + windowNote[key].backgroundColor.b + ')';
             elem.addEventListener('mousedown', octo.mouseDown);
             elem.addEventListener('dblclick', octo.clickNote);
             
@@ -717,43 +748,44 @@ let view = {
     
     render: function(){
         let windows = octo.getWindows();
-        for(let window of windows){
-            let key = Object.keys(window)
-            let elem = document.getElementById(window[key].id)
+        for(let windowNote of windows){
+            let key = Object.keys(windowNote)
+            let elem = document.getElementById(windowNote[key].id)
             let left = elem.style.left.slice(0, -2) * 1;
             let top = elem.style.top.slice(0, -2) * 1;
-            let absLeft = Math.abs(left - window[key].left)
+            let absLeft = Math.abs(left - windowNote[key].left)
             let id = setInterval(function(){
-            left = octo.changeValue(left, window[key].left, 8 )
-                if(left < window[key].left){
+                
+            left = octo.changeValue(left, windowNote[key].left, 8 )
+                if(left < windowNote[key].left){
                     elem.style.left = left + 'px'
-                    if(left + 10>window[key].left ){
+                    if(left + 10 > windowNote[key].left ){
                         clearInterval(id)
-                        elem.style.left = window[key].left + 'px';
+                        elem.style.left = windowNote[key].left + 'px';
                     }  
                 }else{
                     elem.style.left = left + 'px'
-                    if(left - 10<window[key].left ){
+                    if(left - 10 < windowNote[key].left ){
                         clearInterval(id)
-                        elem.style.left = window[key].left + 'px';
+                        elem.style.left = windowNote[key].left + 'px';
                     }
                 }
             },1)
             let id1 = setInterval(function(){
                   
-                top = octo.changeValue(top, window[key].top, 3)
-                if(top > window[key].top){
+                top = octo.changeValue(top, windowNote[key].top, 8)
+                if(top > windowNote[key].top){
                     elem.style.top = top + 'px';
-                    if(top -10 <= window[key].top){
+                    if(top -10 <= windowNote[key].top){
                         clearInterval(id1)
-                        elem.style.top = window[key].top + 'px';
+                        elem.style.top = windowNote[key].top + 'px';
                     }
                 }else{
                     
                     elem.style.top = top + 'px'
-                    if(top + 10 >= window[key].top){
+                    if(top + 10 >= windowNote[key].top){
                         clearInterval(id1)
-                        elem.style.top = window[key].top + 'px';
+                        elem.style.top = windowNote[key].top + 'px';
                     }  
                 }
             },1)
@@ -761,12 +793,12 @@ let view = {
     },
     renderUp: function(){
         let windows = octo.getWindows();
-        for(let window of windows){
-            let key = Object.keys(window)
-            let elem = document.getElementById(window[key].id)
+        for(let windowNote of windows){
+            let key = Object.keys(windowNote)
+            let elem = document.getElementById(windowNote[key].id)
             let left = elem.style.left.slice(0, -2) * 1;
-        elem.style.left = window[key].left + 'px';
-        elem.style.top = window[key].top + 'px';
+        elem.style.left = windowNote[key].left + 'px';
+        elem.style.top = windowNote[key].top + 'px';
         }
     },
     newNote: function(){
@@ -775,6 +807,7 @@ let view = {
         octo.setPosInit()
         view.init();
         view.render();  
+        
     }
 
 };
