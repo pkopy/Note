@@ -589,15 +589,44 @@
         delete: function(e){
             let windows = octo.getWindows();
             let id = e.target.parentNode.parentNode.parentNode.id
-            for(let windowNote of windows){
-                if(Object.keys(windowNote)[0] === id){
-                    let body = document.getElementById(windowNote[id].id)
-                    start = windowNote[id].backgroundColor
-                    windows.splice(id, 1)
-                    model.change(windows)
-                    
-                }
+            id = id * 1;
+            windows.splice(id, 1);
+            let widget = e.target.parentNode.parentNode.parentNode;
+            widget.style.display = 'none';
+            //widget.remove()
+            //model.change(windows);
+            for(let i = id; i < windows.length; i++){
+                let copyWindow = windows[i]
+                console.log(copyWindow[i+1].col, i)
+                windowNote = {};
+                windowNote[i] = {
+                    id: i,
+                    col: '' ,
+                    row: '',
+                    backgroundColor: copyWindow[i+1].backgroundColor,
+                    position: 'absolute',
+                    zIndex: 999,
+                    left: 0,
+                    top: 0,
+                    width: copyWindow[i+1].width,
+                    height: copyWindow[i+1].height,
+                    posX: 0,
+                    posY: 0,
+                    cursor: '',
+                    title: copyWindow[i+1].title,
+                    content: copyWindow[i+1].content,
+                    date: copyWindow[i+1].date
+                };
+                windows[i] = windowNote;
+                
             }
+            model.change(windows);
+            octo.setPosInit();
+            console.log(windows)
+            
+            view.render()
+            octo.init();
+            
         },
         resizeWindow: function(){
             //console.log(widthWindow)
@@ -752,6 +781,7 @@
                     icon.style.opacity = '1'
                     icon.appendChild(palette)
                     icon.parentNode.parentNode.parentNode.removeEventListener('mousedown', octo.mouseDown);
+                    icon.addEventListener('click', octo.delete)
                 })
                 icon.addEventListener('mouseout', function(){
                     icon.style.opacity = '0.5'
