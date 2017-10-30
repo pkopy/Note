@@ -618,6 +618,7 @@
         delete: function(e){
             let windows = octo.getWindows();
             let id = e.target.parentNode.parentNode.parentNode.id
+<<<<<<< HEAD
             id = id * 1;
             let arrHelp = [];
             for(let i = 0; i < id; i++){
@@ -654,6 +655,17 @@
                 widget.remove()
             }
             octo.init()
+=======
+            for(let windowNote of windows){
+                if(Object.keys(windowNote)[0] === id){
+                    let body = document.getElementById(windowNote[id].id)
+                    start = windowNote[id].backgroundColor
+                    windows.splice(id, 1)
+                    model.change(windows)
+                    
+                }
+            }
+>>>>>>> parent of 866c497... function delete
         },
         resizeWindow: function(){
             //console.log(widthWindow)
@@ -810,7 +822,6 @@
                     icon.style.opacity = '1'
                     icon.appendChild(palette)
                     icon.parentNode.parentNode.parentNode.removeEventListener('mousedown', octo.mouseDown);
-                    icon.addEventListener('click', octo.delete)
                 })
                 icon.addEventListener('mouseout', function(){
                     let palette = document.getElementById('palette')
