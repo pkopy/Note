@@ -300,28 +300,21 @@
         },
         newSetPos:function(){
             let windows = model.arrayWindows();
-            let lastWindow = windows[windows.length - 2][windows.length - 2];
-            let pos = lastWindow.col;
-            let row = lastWindow.row;
-            let sumWidth = 300 + pos * 300
-            if(windows.length === 1){
-                octo.setPosInit();
-            
-            }else if(sumWidth >= window.innerWidth){
-                row++;
-                sumWidth = 300;
-                pos++;
-                windows[windows.length - 1][windows.length - 1].top = 50 + row * 300 + 20 * row;
-                windows[windows.length - 1][windows.length - 1].left = 20 + pos * 250 + 20 * pos;
-                windows[windows.length - 1][windows.length - 1].col = pos;
-                windows[windows.length - 1][windows.length - 1].row = row;
-            }else{
-                pos++;
-                windows[windows.length-1][windows.length-1].top = 50 + row * 300 + 20 * row;
-                windows[windows.length-1][windows.length-1].left = 20 + pos * 250 + 20 * pos;
-                windows[windows.length-1][windows.length-1].col = pos;
-                windows[windows.length-1][windows.length-1].row = row;
+            let arrHelpCol = [];
+            let arrHelpRow = [];
+            let row;
+            let col;
+            for(let windowNote of windows){
+                let idObj = Object.keys(windowNote)[0];
+                arrHelpCol.push(windowNote[idObj].col);
+                arrHelpRow.push(windowNote[idObj].row);
             }
+            let maxRow = octo.max(arrHelpRow);    
+            let maxCol = octo.max(arrHelpCol);
+            let pos = windows.length;
+            col = pos - (maxRow * (maxCol + 1));
+
+            console.log(pos, arrHelpCol, col)
             model.change(windows);
             
         },
@@ -625,7 +618,6 @@
         delete: function(e){
             let windows = octo.getWindows();
             let id = e.target.parentNode.parentNode.parentNode.id
-<<<<<<< HEAD
             id = id * 1;
             let arrHelp = [];
             for(let i = 0; i < id; i++){
@@ -662,17 +654,6 @@
                 widget.remove()
             }
             octo.init()
-=======
-            for(let windowNote of windows){
-                if(Object.keys(windowNote)[0] === id){
-                    let body = document.getElementById(windowNote[id].id)
-                    start = windowNote[id].backgroundColor
-                    windows.splice(id, 1)
-                    model.change(windows)
-                    
-                }
-            }
->>>>>>> parent of 866c497... function delete
         },
         resizeWindow: function(){
             //console.log(widthWindow)
