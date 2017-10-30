@@ -117,6 +117,7 @@
             octo.setPosInit();
             view.render();
             viewHead.init();
+            view.init();
             
         },
         newWindow: function(name='', width = 250, height = 300){
@@ -229,6 +230,8 @@
                         contentTxt.innerHTML = windowNote[key].content;
                         contentTxt.className = 'content'
                        
+                        
+
                         noteDiv.appendChild(txt);
                         noteDiv.appendChild(dateTxt);
                         noteDiv.appendChild(contentTxt);
@@ -653,28 +656,12 @@
             for(let widget of widgets){
                 widget.remove()
             }
+            octo.createDivPalette()
             octo.init()
         },
         resizeWindow: function(){
-            //console.log(widthWindow)
-            let windows = octo.getWindows();
-            let widthWindow = window.innerWidth - 250;
-            let arrHelpCol = [];
-            for(let windowNote of windows){
-                let idObj = Object.keys(windowNote)[0];
-                arrHelpCol.push(windowNote[idObj].col);
-            } 
-            let maxCol = octo.max(arrHelpCol);
-            if(widthWindow < (maxCol + 1) * 300){
-                octo.setPosInit();
-                view.render();
-                
-            }
-            if(widthWindow - (maxCol + 1) * 300 > 300){
-                octo.setPosInit();
-                view.render();
-                
-            }
+            octo.setPosInit();
+            view.render();
         },
         clickNote: function(e){
             let windows = octo.getWindows();
@@ -752,8 +739,9 @@
     /*===VIEW===*/
     let view = {
         init: function(){
-            octo.createDivPalette();
+            //octo.createDivPalette();
             octo.createDiv();
+            
             //let body = document.getElementsByTagName('body')[0];
             window.addEventListener('resize', octo.resizeWindow)
             let newNote = document.getElementById('newNote')
@@ -788,7 +776,7 @@
                 let palette = document.getElementById('palette')
                 palette.style.position = 'absolute';
                 palette.style.left = '10px';
-                palette.style.bottom = '37px';
+                palette.style.bottom = '35px';
                 palette.style.display = 'block'
                 icon.style.opacity = 1;
                 let backColor = this.parentNode.parentNode.parentNode
@@ -798,14 +786,17 @@
                 })
                 icon.addEventListener('mouseout', function(){
                     let palette = document.getElementById('palette')
+                    
                     icon.style.opacity = '0.5'
                     palette.style.display = 'none'
                     icon.parentNode.parentNode.parentNode.addEventListener('mousedown', octo.mouseDown);
+                   // document.getElementById('notes').appendChild(palette)
                 })
             }
             let icons1 = document.querySelectorAll('.xx1')
             for(let icon of icons1){
                 let palette = document.getElementById('palette')
+                icon.addEventListener('click', octo.delete)
                 icon.addEventListener('mouseover', function(){
                     icon.style.opacity = '1'
                     icon.appendChild(palette)
@@ -880,10 +871,10 @@
         newNote: function(){
             octo.newWindow();
             octo.createDiv();
-            
             octo.setPosInit()
+            view.init();  
+            view.render();
             view.init();
-            view.render();  
             
         }
     
