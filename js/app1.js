@@ -230,7 +230,6 @@
                         contentTxt.className = 'content'
                        
                         noteDiv.appendChild(txt);
-                        
                         noteDiv.appendChild(dateTxt);
                         noteDiv.appendChild(contentTxt);
                         helpDiv.appendChild(toolsDiv)
@@ -242,6 +241,36 @@
                 }
               
             
+        },
+        createDivPalette: function() {
+            let palette = document.createElement('div');
+            let white = document.createElement('div');
+            let blue = document.createElement('div');
+            let green = document.createElement('div');
+            let red = document.createElement('div');
+            let pink = document.createElement('div');
+            let yellow = document.createElement('div');
+            palette.id = 'palette';
+            palette.style.position = 'absolute';
+            white.id = 'white';
+            white.className = 'colors';
+            blue.id = 'blue';
+            blue.className = 'colors';
+            green.id = 'green';
+            green.className = 'colors';
+            red.id = 'red';
+            red.className = 'colors';
+            pink.id = 'pink';
+            pink.className = 'colors';
+            yellow.id = 'yellow';
+            yellow.className = 'colors';
+            palette.appendChild(white);
+            palette.appendChild(blue);
+            palette.appendChild(green);
+            palette.appendChild(red);
+            palette.appendChild(pink);
+            palette.appendChild(yellow);
+            document.getElementById('notes').appendChild(palette)
         },
         setPosInit: function(){
             let windows = model.arrayWindows();
@@ -590,43 +619,41 @@
             let windows = octo.getWindows();
             let id = e.target.parentNode.parentNode.parentNode.id
             id = id * 1;
-            windows.splice(id, 1);
-            let widget = e.target.parentNode.parentNode.parentNode;
-            widget.style.display = 'none';
-            //widget.remove()
-            //model.change(windows);
-            for(let i = id; i < windows.length; i++){
+            let arrHelp = [];
+            for(let i = 0; i < id; i++){
+                arrHelp.push(windows[i])
+            }
+            let widgets = document.querySelectorAll('.widget')
+           for(let i = id; i < windows.length - 1; i++){
                 let copyWindow = windows[i]
-                console.log(copyWindow[i+1].col, i)
                 windowNote = {};
                 windowNote[i] = {
                     id: i,
-                    col: '' ,
-                    row: '',
-                    backgroundColor: copyWindow[i+1].backgroundColor,
+                    col: copyWindow[i].col ,
+                    row: copyWindow[i].row,
+                    backgroundColor: windows[i+1][i+1].backgroundColor,
                     position: 'absolute',
                     zIndex: 999,
-                    left: 0,
-                    top: 0,
-                    width: copyWindow[i+1].width,
-                    height: copyWindow[i+1].height,
+                    left: copyWindow[i].left,
+                    top: copyWindow[i].top,
+                    width: windows[i+1][i+1].width,
+                    height: windows[i+1][i+1].height,
                     posX: 0,
                     posY: 0,
                     cursor: '',
-                    title: copyWindow[i+1].title,
-                    content: copyWindow[i+1].content,
-                    date: copyWindow[i+1].date
+                    title: windows[i+1][i+1].title,
+                    content: windows[i+1][i+1].content,
+                    date: windows[i+1][i+1].date
+                    
                 };
-                windows[i] = windowNote;
-                
+
+                arrHelp.push(windowNote)
             }
-            model.change(windows);
-            octo.setPosInit();
-            console.log(windows)
-            
-            view.render()
-            octo.init();
-            
+            model.change(arrHelp);
+            for(let widget of widgets){
+                widget.remove()
+            }
+            octo.init()
         },
         resizeWindow: function(){
             //console.log(widthWindow)
@@ -725,7 +752,7 @@
     /*===VIEW===*/
     let view = {
         init: function(){
-            
+            octo.createDivPalette();
             octo.createDiv();
             //let body = document.getElementsByTagName('body')[0];
             window.addEventListener('resize', octo.resizeWindow)
@@ -770,6 +797,7 @@
                     palette.addEventListener('click', octo.changeColorNote)
                 })
                 icon.addEventListener('mouseout', function(){
+                    let palette = document.getElementById('palette')
                     icon.style.opacity = '0.5'
                     palette.style.display = 'none'
                     icon.parentNode.parentNode.parentNode.addEventListener('mousedown', octo.mouseDown);
@@ -777,12 +805,14 @@
             }
             let icons1 = document.querySelectorAll('.xx1')
             for(let icon of icons1){
+                let palette = document.getElementById('palette')
                 icon.addEventListener('mouseover', function(){
                     icon.style.opacity = '1'
                     icon.appendChild(palette)
                     icon.parentNode.parentNode.parentNode.removeEventListener('mousedown', octo.mouseDown);
                 })
                 icon.addEventListener('mouseout', function(){
+                    let palette = document.getElementById('palette')
                     icon.style.opacity = '0.5'
                     palette.style.display = 'none'
                     icon.parentNode.parentNode.parentNode.addEventListener('mousedown', octo.mouseDown);
@@ -850,6 +880,7 @@
         newNote: function(){
             octo.newWindow();
             octo.createDiv();
+            
             octo.setPosInit()
             view.init();
             view.render();  
