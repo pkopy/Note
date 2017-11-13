@@ -1,2 +1,2 @@
 # Note
-https://pkopy.github.io/Note/.
+http://p-kopycki.pl
